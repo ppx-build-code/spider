@@ -11,10 +11,10 @@ import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,10 +47,9 @@ public class CompaniesServiceImpl implements CompaniesService {
     private static final String QCC_BUSINESS_SCOPE_SUFFIX = "<";
 
 
-    @Override
-    public Flux<String> get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
-
-        while (true) {
+    private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
+        boolean flag1 = true;
+        while (flag1) {
             try {
                 Object[] ip = IpPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
@@ -59,31 +58,43 @@ public class CompaniesServiceImpl implements CompaniesService {
                 if (result.getStatusCode() == HttpStatus.OK) {
                     String content = result.getBody();
 
-                    String url = reqUrlEnum.getDetailPrefix() + StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
+                    String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
+                    System.out.println("suffix > > > " + suffix);
+                    if (suffix == null) {
+                        IpPoolManager.delOne(reqUrlEnum.getKey());
+                        continue;
+                    }
+
+                    String url = reqUrlEnum.getDetailPrefix() + suffix;
+
                     handleLists(content, companyDO, reqUrlEnum);
 
-                    while (true) {
+                    boolean flag2 = true;
+                    while (flag2) {
                         try {
                             result = req(url, reqUrlEnum, null, ip);
 
                             if (result.getStatusCode() == HttpStatus.OK) {
                                 content = result.getBody();
                                 handleDetail(content, companyDO, reqUrlEnum);
-                                break;
+
+                                flag2 = false;
                             }
                         } catch (Exception e) {
+                            e.printStackTrace();
                             ip = IpPoolManager.getIpAndPort(reqUrlEnum.getKey());
                             IpPoolManager.delOne(reqUrlEnum.getKey());
                         }
 
                     }
-                    break;
+                    flag1 = false;
+                } else {
+                    IpPoolManager.delOne(reqUrlEnum.getKey());
                 }
             } catch (Exception e) {
                 IpPoolManager.delOne(reqUrlEnum.getKey());
             }
         }
-        return null;
     }
 
 
@@ -212,6 +223,16 @@ public class CompaniesServiceImpl implements CompaniesService {
             System.out.println("地址 > > > " + address);
             System.out.println("法人 > > > " + legal);
 
+            companyDO.setCategory(category);
+            companyDO.setType(type);
+            companyDO.setRegistryNo(registry);
+            companyDO.setOrganizationCode(organization);
+            companyDO.setUnifiedCredit(unified);
+            companyDO.setTaxNo(tax);
+            companyDO.setOperatingPeriod(operating);
+            companyDO.setRegistration(registration);
+            companyDO.setAddress(address);
+            companyDO.setLegal(legal);
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
             System.out.println("经营范围 > > > " + businessScope);
@@ -222,5 +243,19 @@ public class CompaniesServiceImpl implements CompaniesService {
     public static void main(String[] args) throws IOException {
         new CompaniesServiceImpl().get("阿里巴巴", ReqUrlEnum.TYC, new CompanyDO());
         new CompaniesServiceImpl().get("阿里巴巴", ReqUrlEnum.QCC, new CompanyDO());
+    }
+
+    @Override
+    public CompanyDO get(String name) {
+        CompanyDO companyDO = new CompanyDO();
+        get(name, ReqUrlEnum.TYC, companyDO);
+        final long a = (int) (Math.random()*3000);
+        try {
+            Thread.sleep(a);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        get(name, ReqUrlEnum.QCC, companyDO);
+        return companyDO;
     }
 }

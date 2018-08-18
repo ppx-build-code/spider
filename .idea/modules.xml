@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/alone.iml" filepath="$PROJECT_DIR$/.idea/alone.iml" />
       <module fileurl="file://$PROJECT_DIR$/TYC.links86-spider/links86-spider-tyc.iml" filepath="$PROJECT_DIR$/TYC.links86-spider/links86-spider-tyc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TYC.links86-spider/tyc.iml" filepath="$PROJECT_DIR$/TYC.links86-spider/tyc.iml" />
     </modules>
   </component>
 </project>

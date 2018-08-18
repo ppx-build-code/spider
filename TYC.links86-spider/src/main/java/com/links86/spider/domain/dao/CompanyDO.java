@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 public class CompanyDO {
     private String id;
     private String name;
+    private String legal;
     /**
      * 注册时间
      */
@@ -78,4 +79,25 @@ public class CompanyDO {
      */
     private String scope;
 
+    @Override
+    public String toString() {
+        return "CompanyDO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", registryTime='" + registryTime + '\'' +
+                ", registryMoney='" + registryMoney + '\'' +
+                ", status='" + status + '\'' +
+                ", category='" + category + '\'' +
+                ", type='" + type + '\'' +
+                ", registryNo='" + registryNo + '\'' +
+                ", organizationCode='" + organizationCode + '\'' +
+                ", unifiedCredit='" + unifiedCredit + '\'' +
+                ", TaxNo='" + TaxNo + '\'' +
+                ", operatingPeriod='" + operatingPeriod + '\'' +
+                ", approvalDate='" + approvalDate + '\'' +
+                ", registration='" + registration + '\'' +
+                ", address='" + address + '\'' +
+                ", scope='" + scope + '\'' +
+                '}';
+    }
 }
