@@ -59,7 +59,6 @@ public class CompaniesServiceImpl implements CompaniesService {
                     String content = result.getBody();
 
                     String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
-                    System.out.println("suffix > > > " + suffix);
                     if (suffix == null) {
                         IpPoolManager.delOne(reqUrlEnum.getKey());
                         continue;
@@ -67,11 +66,15 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                     String url = reqUrlEnum.getDetailPrefix() + suffix;
 
+                    // 处理列表中需要截取的数据
                     handleLists(content, companyDO, reqUrlEnum);
 
                     boolean flag2 = true;
                     while (flag2) {
                         try {
+
+                            Thread.sleep((long) (Math.random()*5000));
+
                             result = req(url, reqUrlEnum, null, ip);
 
                             if (result.getStatusCode() == HttpStatus.OK) {
@@ -249,12 +252,6 @@ public class CompaniesServiceImpl implements CompaniesService {
     public CompanyDO get(String name) {
         CompanyDO companyDO = new CompanyDO();
         get(name, ReqUrlEnum.TYC, companyDO);
-        final long a = (int) (Math.random()*3000);
-        try {
-            Thread.sleep(a);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         get(name, ReqUrlEnum.QCC, companyDO);
         return companyDO;
     }

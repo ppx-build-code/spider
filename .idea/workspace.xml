@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1a99e04b-8cd0-4747-b86a-917d609bf4e0" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/CompaniesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/CompaniesService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/TYC.links86-spider/target/" />
@@ -82,7 +72,7 @@
       <file leaf-file-name="ScheduledTasks.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
+            <state relative-caret-position="615">
               <caret line="53" column="77" selection-start-line="53" selection-start-column="77" selection-end-line="53" selection-end-column="77" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -91,11 +81,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CompaniesServiceImpl.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CompaniesServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="255" column="32" lean-forward="true" selection-start-line="255" selection-start-column="32" selection-end-line="255" selection-end-column="32" />
+            <state relative-caret-position="3495">
+              <caret line="249" selection-start-line="249" selection-end-line="249" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedisCache.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IpPoolManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="29" column="18" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -106,8 +117,8 @@
       <file leaf-file-name="CompanyDO.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="254">
-              <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+            <state relative-caret-position="240">
+              <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -120,6 +131,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
               <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CompaniesController.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/web/CompaniesController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="30">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -203,8 +223,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -278,7 +299,19 @@
               <item name="com" type="462c0819:PsiDirectoryNode" />
               <item name="links86" type="462c0819:PsiDirectoryNode" />
               <item name="spider" type="462c0819:PsiDirectoryNode" />
-              <item name="scheduled" type="462c0819:PsiDirectoryNode" />
+              <item name="cache" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spider" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+              <item name="TYC.links86-spider" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="links86" type="462c0819:PsiDirectoryNode" />
+              <item name="spider" type="462c0819:PsiDirectoryNode" />
+              <item name="manager" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="spider" type="b2602c69:ProjectViewProjectNode" />
@@ -317,19 +350,10 @@
               <item name="spider" type="462c0819:PsiDirectoryNode" />
               <item name="web" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="spider" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spider" type="462c0819:PsiDirectoryNode" />
-              <item name="TYC.links86-spider" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -353,7 +377,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.TycApplication">
+  <component name="RunManager" selected="Application.CompaniesServiceImpl">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
       <method>
@@ -464,8 +488,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TycApplication" />
         <item itemvalue="Application.CompaniesServiceImpl" />
+        <item itemvalue="Application.TycApplication" />
         <item itemvalue="Application.IpPoolManager" />
       </list>
     </recent_temporary>
@@ -486,12 +510,14 @@
       <workItem from="1534477177127" duration="6261000" />
       <workItem from="1534488098596" duration="14428000" />
       <workItem from="1534555607295" duration="5817000" />
-      <workItem from="1534582889896" duration="2260000" />
+      <workItem from="1534582889896" duration="2490000" />
+      <workItem from="1534681893535" duration="1386000" />
+      <workItem from="1534728954700" duration="103000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67429000" />
+    <option name="totallyTimeSpent" value="69148000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -504,7 +530,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
@@ -517,9 +542,8 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="4" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.29538462" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.29538462" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3294979" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.32923076" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="bottom" id="Java Enterprise" order="12" weight="0.3294979" />
@@ -528,7 +552,7 @@
       <window_info anchor="bottom" id="Run" order="2" weight="0.42461538" />
       <window_info anchor="bottom" id="Spring" order="8" weight="0.3294979" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.33846155" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49895397" visible="true" weight="0.30891332" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49895397" visible="true" weight="0.31623933" />
       <window_info anchor="right" id="Bean Validation" order="7" />
       <window_info id="Web" order="7" sideWeight="0.501046" side_tool="true" weight="0.25506938" />
       <window_info anchor="right" id="SciView" order="10" />
@@ -537,6 +561,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32923076" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -550,17 +575,108 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java</url>
-          <line>257</line>
-          <properties />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="1" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="53" column="77" selection-start-line="53" selection-start-column="77" selection-end-line="53" selection-end-column="77" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3495">
+          <caret line="249" lean-forward="true" selection-start-line="249" selection-end-line="249" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="29" column="18" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/web/CompaniesController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="53" column="77" selection-start-line="53" selection-start-column="77" selection-end-line="53" selection-end-column="77" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3585">
+          <caret line="255" column="32" lean-forward="true" selection-start-line="255" selection-start-column="32" selection-end-line="255" selection-end-column="32" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="630">
@@ -677,13 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/web/CompaniesController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="32" selection-start-line="2" selection-start-column="32" selection-end-line="2" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.0.8.RELEASE/spring-web-5.0.8.RELEASE.jar!/org/springframework/http/client/SimpleClientHttpRequestFactory.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -706,27 +815,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="31" column="48" selection-start-line="31" selection-start-column="48" selection-end-line="31" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/5.0.8.RELEASE/spring-web-5.0.8.RELEASE.jar!/org/springframework/web/client/RestTemplate.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
           <caret line="67" column="11" selection-start-line="67" selection-start-column="11" selection-end-line="67" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="21" column="51" selection-start-line="21" selection-start-column="51" selection-end-line="21" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -753,7 +845,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
+        <state relative-caret-position="615">
           <caret line="53" column="77" selection-start-line="53" selection-start-column="77" selection-end-line="53" selection-end-column="77" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -763,11 +855,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyDO.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="17" column="11" lean-forward="true" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+        <state relative-caret-position="240">
+          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/web/CompaniesController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -780,11 +879,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="255" column="32" lean-forward="true" selection-start-line="255" selection-start-column="32" selection-end-line="255" selection-end-column="32" />
+        <state relative-caret-position="3495">
+          <caret line="249" selection-start-line="249" selection-end-line="249" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="29" column="18" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
         </state>
       </provider>
     </entry>
