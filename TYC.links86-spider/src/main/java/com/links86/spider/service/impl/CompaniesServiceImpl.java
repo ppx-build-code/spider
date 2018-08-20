@@ -1,13 +1,19 @@
 package com.links86.spider.service.impl;
 
+import com.links86.spider.domain.constant.CompanyStatusEnum;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
+import com.links86.spider.domain.dao.CompanyEast;
 import com.links86.spider.interceptor.LoggingRequestsInterceptor;
 import com.links86.spider.manager.IpPoolManager;
+import com.links86.spider.repository.CompanyEastRepositry;
+import com.links86.spider.repository.CompanyRepository;
 import com.links86.spider.service.CompaniesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -16,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.*;
-import java.util.Random;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -56,12 +62,17 @@ public class CompaniesServiceImpl implements CompaniesService {
 
     @Resource
     private IpPoolManager ipPoolManager;
+    @Resource
+    private CompanyEastRepositry companyEastRepositry;
+    @Resource
+    private CompanyRepository company;
 
 
     private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
         boolean flag1 = true;
         while (flag1) {
             try {
+                Thread.sleep((long) (Math.random()*2000));
                 Object[] ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
                 ResponseEntity<String> result = req(reqUrlEnum.getUrl(), reqUrlEnum, param, ip);
@@ -200,10 +211,10 @@ public class CompaniesServiceImpl implements CompaniesService {
             log.debug("注册时间 > > > " + time);
             log.debug("企业状态 > > > " + status);
 
-            companyDO.setId(id);
-            companyDO.setRegistryMoney(money);
-            companyDO.setRegistryTime(time);
-            companyDO.setStatus(status);
+            companyDO.setTycId(id);
+            companyDO.setCapitalInvested(money);
+            companyDO.setStartTime(time);
+            companyDO.setStatus(CompanyStatusEnum.getCode(status));
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             // todo
         }
@@ -227,9 +238,18 @@ public class CompaniesServiceImpl implements CompaniesService {
             String address = StringUtils.substringBetween(content, TYC_COMPANY_ADDRESS_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String legal = StringUtils.substringBetween(content, TYC_LEGAL_PERSON_PREFIX, TYC_LEGAL_PERSON_SUFFIX);
 
+            if (StringUtils.isNotBlank(website)) {
+                if (website.indexOf("</a>") != 0) {
+                    website = StringUtils.substringBetween(website, ">", "</a>");
+                } else {
+                    website = null;
+                }
+            }
+
             log.debug("分数:{}", score);
             log.debug("邮箱:{}", email);
             log.debug("网址:{}", website);
+
             log.debug("行业:{}", category);
             log.debug("企业类型:{}", type);
             log.debug("工商注册号:{}", registry);
@@ -242,22 +262,22 @@ public class CompaniesServiceImpl implements CompaniesService {
             log.debug("法人:{}", legal);
 
             companyDO.setScore(score);
+            companyDO.setRegisterNumber(registry);
             companyDO.setEmail(email);
             companyDO.setWebsite(website);
-            companyDO.setCategory(category);
+            companyDO.setIndustry(category);
             companyDO.setType(type);
-            companyDO.setRegistryNo(registry);
-            companyDO.setOrganizationCode(organization);
-            companyDO.setUnifiedCredit(unified);
-            companyDO.setTaxNo(tax);
-            companyDO.setOperatingPeriod(operating);
-            companyDO.setRegistration(registration);
+            companyDO.setOrgCode(organization);
+            companyDO.setCreditCode(unified);
+            companyDO.setTaxCode(tax);
+            companyDO.setTerms(operating);
+            companyDO.setRegisterAuthority(registration);
             companyDO.setAddress(address);
             companyDO.setLegal(legal);
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
             log.debug("经营范围 > > > " + businessScope);
-            companyDO.setScope(businessScope);
+            companyDO.setBusinessScope(businessScope);
         }
     }
 
@@ -267,16 +287,39 @@ public class CompaniesServiceImpl implements CompaniesService {
     }
 
     @Override
-    public CompanyDO getTyc(String name) {
+    public CompanyDO getTyc(String id, String name) {
         CompanyDO companyDO = new CompanyDO();
+        companyDO.setId(id);
+        companyDO.setFlag(2);
+        companyDO.setName(name);
         get(name, ReqUrlEnum.TYC, companyDO);
         return companyDO;
     }
 
     @Override
-    public CompanyDO getQcc(String name) {
-        CompanyDO companyDO = new CompanyDO();
-        get(name, ReqUrlEnum.QCC, new CompanyDO());
+    public CompanyDO getQcc(CompanyDO companyDO) {
+        get(companyDO.getName(), ReqUrlEnum.QCC, companyDO);
+        companyDO.setFlag(1);
         return companyDO;
+    }
+
+    @Override
+    public List<CompanyEast> listsByEast(Integer flag, Integer limit) {
+        return companyEastRepositry.findAllByFlagEquals(new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "id")), flag);
+    }
+
+    @Override
+    public List<CompanyDO> listsByNew(Integer flag, Integer limit) {
+        return company.findAllByFlagEquals(new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "id")), flag);
+    }
+
+    @Override
+    public void save(List<CompanyEast> companyEasts) {
+        companyEastRepositry.save(companyEasts);
+    }
+
+    @Override
+    public void saveNew(List<CompanyDO> companyDOs) {
+        company.save(companyDOs);
     }
 }

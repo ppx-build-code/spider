@@ -2,32 +2,49 @@ package com.links86.spider.domain.dao;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
+@Entity(name = "company_east_temp")
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "id"
+        })
+})
 public class CompanyDO {
+    @Id
     private String id;
+    private String tycId;
+    private String score;
+    private String email;
+    private String website;
     private String name;
     private String legal;
+    @Column(length = 1)
+    @ColumnDefault(value = "2")
+    private Integer flag;
     /**
      * 注册时间
      */
-    private String registryTime;
+    private String startTime;
 
     /**
      * 注册资本
      */
-    private String registryMoney;
+    private String capitalInvested;
 
     /**
      * 状态
      */
-    private String status;
+    private Integer status;
 
     /**
      * 行业
      */
-    private String category;
+    private String industry;
 
     /**
      * 企业类型
@@ -37,37 +54,32 @@ public class CompanyDO {
     /**
      * 工商注册号
      */
-    private String registryNo;
+    private String registerNumber;
 
     /**
      * 组织结构代码
      */
-    private String organizationCode;
+    private String orgCode;
 
     /**
      * 统一信用代码
      */
-    private String unifiedCredit;
+    private String creditCode;
 
     /**
      * 纳税人识别号
      */
-    private String TaxNo;
+    private String taxCode;
 
     /**
      * 经营期限
      */
-    private String operatingPeriod;
-
-    /**
-     * 核准日期
-     */
-    private String approvalDate;
+    private String terms;
 
     /**
      * 登记机关
      */
-    private String registration;
+    private String registerAuthority;
 
     /**
      * 注册地址
@@ -77,27 +89,31 @@ public class CompanyDO {
     /**
      * 经营范围
      */
-    private String scope;
+    private String businessScope;
 
     @Override
     public String toString() {
         return "CompanyDO{" +
                 "id='" + id + '\'' +
+                ", tycId='" + tycId + '\'' +
+                ", score='" + score + '\'' +
+                ", email='" + email + '\'' +
+                ", website='" + website + '\'' +
                 ", name='" + name + '\'' +
-                ", registryTime='" + registryTime + '\'' +
-                ", registryMoney='" + registryMoney + '\'' +
+                ", legal='" + legal + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", capitalInvested='" + capitalInvested + '\'' +
                 ", status='" + status + '\'' +
-                ", category='" + category + '\'' +
+                ", industry='" + industry + '\'' +
                 ", type='" + type + '\'' +
-                ", registryNo='" + registryNo + '\'' +
-                ", organizationCode='" + organizationCode + '\'' +
-                ", unifiedCredit='" + unifiedCredit + '\'' +
-                ", TaxNo='" + TaxNo + '\'' +
-                ", operatingPeriod='" + operatingPeriod + '\'' +
-                ", approvalDate='" + approvalDate + '\'' +
-                ", registration='" + registration + '\'' +
+                ", registerNumber='" + registerNumber + '\'' +
+                ", orgCode='" + orgCode + '\'' +
+                ", creditCode='" + creditCode + '\'' +
+                ", taxCode='" + taxCode + '\'' +
+                ", terms='" + terms + '\'' +
+                ", registerAuthority='" + registerAuthority + '\'' +
                 ", address='" + address + '\'' +
-                ", scope='" + scope + '\'' +
+                ", businessScope='" + businessScope + '\'' +
                 '}';
     }
 }

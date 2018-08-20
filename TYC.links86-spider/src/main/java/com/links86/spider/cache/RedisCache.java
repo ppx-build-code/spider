@@ -1,37 +1,22 @@
 package com.links86.spider.cache;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-public class RedisCache {
+import javax.annotation.Resource;
 
-    private static final String REDIS_HOST = "47.98.50.18";
-    private static final String REDIS_PWD = "86links#pwd1234";
-    private static final int REDIS_PORT = 6379;
+public abstract class RedisCache {
 
-    private static RedisTemplate redisTemplate;
+    @Resource
+    protected JedisConnectionFactory jedisConnectionFactory;
 
-
-    public static RedisTemplate getRedisTemplate() {
-        if (redisTemplate == null) {
-            return new RedisCache().redisTemplate();
-        }
-        return redisTemplate;
-    }
-
+    @Bean
     private RedisTemplate<String, Object> redisTemplate() {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-        factory.setHostName(REDIS_HOST);
-        factory.setPassword(REDIS_PWD);
-        factory.setPort(REDIS_PORT);
-        factory.setDatabase(0);
-        factory.afterPropertiesSet();
-
-        RedisTemplate redisTemplate = new RedisTemplate();
-        redisTemplate.setConnectionFactory(factory);
-        redisTemplate.afterPropertiesSet();
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate();
+        redisTemplate.setConnectionFactory(this.jedisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return redisTemplate;
