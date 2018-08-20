@@ -6,19 +6,21 @@ import com.links86.spider.interceptor.LoggingRequestsInterceptor;
 import com.links86.spider.manager.IpPoolManager;
 import com.links86.spider.service.CompaniesService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.*;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompaniesServiceImpl implements CompaniesService {
@@ -32,6 +34,12 @@ public class CompaniesServiceImpl implements CompaniesService {
     private static final String TYC_LEGAL_PERSON_PREFIX = "title=\"";
     private static final String TYC_LEGAL_PERSON_SUFFIX = "\"";
 
+    private static final String TYC_SCORE_PREFIX = "评分</span>";
+    private static final String TYC_SCORE_SUFFIX = "</span>";
+    private static final String TYC_EMAIL_PREFIX = "<span class=\"icon-email417 \"></span><span class=\"title-right417\">";
+    private static final String TYC_EMAIL_SUFFIX = "</span>";
+    private static final String TYC_WEBSITE_PREFIX = "<span class=\"icon-cp417\"></span><span class=\"title-right417\">";
+    private static final String TYC_WEBSITE_SUFFIX = "</span>";
     private static final String TYC_COMPANY_CATEGORY_PREFIX = "行业：</span><span>";
     private static final String TYC_COMPANY_TYPE_PREFIX = "企业类型：</span><span>";
     private static final String TYC_REGISTRY_CODE_PREFIX = "工商注册号：</span><span>";
@@ -46,12 +54,15 @@ public class CompaniesServiceImpl implements CompaniesService {
     private static final String QCC_BUSINESS_SCOPE_PREFIX = "经营范围</div> <div class=\"basic-item-right\">";
     private static final String QCC_BUSINESS_SCOPE_SUFFIX = "<";
 
+    @Resource
+    private IpPoolManager ipPoolManager;
+
 
     private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
         boolean flag1 = true;
         while (flag1) {
             try {
-                Object[] ip = IpPoolManager.getIpAndPort(reqUrlEnum.getKey());
+                Object[] ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
                 ResponseEntity<String> result = req(reqUrlEnum.getUrl(), reqUrlEnum, param, ip);
 
@@ -60,7 +71,7 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                     String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
                     if (suffix == null) {
-                        IpPoolManager.delOne(reqUrlEnum.getKey());
+                        ipPoolManager.delOne(reqUrlEnum.getKey());
                         continue;
                     }
 
@@ -85,17 +96,17 @@ public class CompaniesServiceImpl implements CompaniesService {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            ip = IpPoolManager.getIpAndPort(reqUrlEnum.getKey());
-                            IpPoolManager.delOne(reqUrlEnum.getKey());
+                            ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
+                            ipPoolManager.delOne(reqUrlEnum.getKey());
                         }
 
                     }
                     flag1 = false;
                 } else {
-                    IpPoolManager.delOne(reqUrlEnum.getKey());
+                    ipPoolManager.delOne(reqUrlEnum.getKey());
                 }
             } catch (Exception e) {
-                IpPoolManager.delOne(reqUrlEnum.getKey());
+                ipPoolManager.delOne(reqUrlEnum.getKey());
             }
         }
     }
@@ -135,8 +146,8 @@ public class CompaniesServiceImpl implements CompaniesService {
                     return result;
                 }
             } catch (Exception e) {
-                IpPoolManager.delOne(reqUrlEnum.getKey());
-                tempIp = IpPoolManager.getIpAndPort(reqUrlEnum.getKey());
+                ipPoolManager.delOne(reqUrlEnum.getKey());
+                tempIp = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
             }
         }
 
@@ -164,8 +175,8 @@ public class CompaniesServiceImpl implements CompaniesService {
                 HttpHeaders headers = result.getHeaders();
                 return new String[] {headers.getFirst(httpHeaders.SET_COOKIE), headers.getFirst(httpHeaders.SET_COOKIE2)};
             } catch (Exception e) {
-                IpPoolManager.delOne(ReqUrlEnum.QCC.getKey());
-                tempId = IpPoolManager.getIpAndPort(ReqUrlEnum.QCC.getKey());
+                ipPoolManager.delOne(ReqUrlEnum.QCC.getKey());
+                tempId = ipPoolManager.getIpAndPort(ReqUrlEnum.QCC.getKey());
             }
         }
 
@@ -183,11 +194,11 @@ public class CompaniesServiceImpl implements CompaniesService {
             String time = StringUtils.substringBetween(content, TYC_COMPANY_REGISTRY_TIME_PREFIX_INDEX, TYC_COMPANY_BASE_SUFFIX);
             String status = StringUtils.substringBetween(content, TYC_COMPANY_STATUS, TYC_COMPANY_BASE_SUFFIX);
 
-            System.out.println("id > > > " + id);
-            System.out.println("详情 > > > " + url);
-            System.out.println("注册资金 > > > " + money);
-            System.out.println("注册时间 > > > " + time);
-            System.out.println("企业状态 > > > " + status);
+            log.debug("id > > > " + id);
+            log.debug("详情 > > > " + url);
+            log.debug("注册资金 > > > " + money);
+            log.debug("注册时间 > > > " + time);
+            log.debug("企业状态 > > > " + status);
 
             companyDO.setId(id);
             companyDO.setRegistryMoney(money);
@@ -202,6 +213,9 @@ public class CompaniesServiceImpl implements CompaniesService {
     private void handleDetail(String content, CompanyDO companyDO, ReqUrlEnum reqUrlEnum) {
         if (reqUrlEnum == ReqUrlEnum.TYC) {
 
+            String score = StringUtils.substringBetween(content, TYC_SCORE_PREFIX, TYC_SCORE_SUFFIX);
+            String email = StringUtils.substringBetween(content, TYC_EMAIL_PREFIX, TYC_EMAIL_SUFFIX);
+            String website = StringUtils.substringBetween(content, TYC_WEBSITE_PREFIX, TYC_WEBSITE_SUFFIX);
             String category = StringUtils.substringBetween(content, TYC_COMPANY_CATEGORY_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String type = StringUtils.substringBetween(content, TYC_COMPANY_TYPE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String registry = StringUtils.substringBetween(content, TYC_REGISTRY_CODE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
@@ -209,23 +223,27 @@ public class CompaniesServiceImpl implements CompaniesService {
             String unified = StringUtils.substringBetween(content, TYC_UNIFIED_CREDIT_CODE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String tax = StringUtils.substringBetween(content, TYC_TAXPAYER_IDENTIFICATION_CODE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String operating = StringUtils.substringBetween(content, TYC_OPERATING_PERIOD_CODE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
-            String approval = StringUtils.substringBetween(content, TYC_APPROVAL_DATE_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String registration = StringUtils.substringBetween(content, TYC_REGISTRATION_AUTHORITY_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String address = StringUtils.substringBetween(content, TYC_COMPANY_ADDRESS_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String legal = StringUtils.substringBetween(content, TYC_LEGAL_PERSON_PREFIX, TYC_LEGAL_PERSON_SUFFIX);
 
-            System.out.println("行业 > > > " + category);
-            System.out.println("企业类型 > > > " + type);
-            System.out.println("工商注册号 > > > " + registry);
-            System.out.println("组织机构代码 > > > " + organization);
-            System.out.println("统一信用代码 > > > " + unified);
-            System.out.println("纳税人识别码 > > > " + tax);
-            System.out.println("经营期限 > > > " + operating);
-            System.out.println("核准日期 > > > " + approval);
-            System.out.println("登记机关 > > > " + registration);
-            System.out.println("地址 > > > " + address);
-            System.out.println("法人 > > > " + legal);
+            log.debug("分数:{}", score);
+            log.debug("邮箱:{}", email);
+            log.debug("网址:{}", website);
+            log.debug("行业:{}", category);
+            log.debug("企业类型:{}", type);
+            log.debug("工商注册号:{}", registry);
+            log.debug("组织机构代码:{}", organization);
+            log.debug("统一信用代码:{}", unified);
+            log.debug("纳税人识别码:{}", tax);
+            log.debug("经营期限:{}", operating);
+            log.debug("登记机关:{}", registration);
+            log.debug("地址:{}", address);
+            log.debug("法人:{}", legal);
 
+            companyDO.setScore(score);
+            companyDO.setEmail(email);
+            companyDO.setWebsite(website);
             companyDO.setCategory(category);
             companyDO.setType(type);
             companyDO.setRegistryNo(registry);
@@ -238,7 +256,7 @@ public class CompaniesServiceImpl implements CompaniesService {
             companyDO.setLegal(legal);
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
-            System.out.println("经营范围 > > > " + businessScope);
+            log.debug("经营范围 > > > " + businessScope);
             companyDO.setScope(businessScope);
         }
     }
@@ -249,10 +267,16 @@ public class CompaniesServiceImpl implements CompaniesService {
     }
 
     @Override
-    public CompanyDO get(String name) {
+    public CompanyDO getTyc(String name) {
         CompanyDO companyDO = new CompanyDO();
         get(name, ReqUrlEnum.TYC, companyDO);
-        get(name, ReqUrlEnum.QCC, companyDO);
+        return companyDO;
+    }
+
+    @Override
+    public CompanyDO getQcc(String name) {
+        CompanyDO companyDO = new CompanyDO();
+        get(name, ReqUrlEnum.QCC, new CompanyDO());
         return companyDO;
     }
 }
