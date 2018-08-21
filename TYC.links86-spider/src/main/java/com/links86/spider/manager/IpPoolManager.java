@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 @Component
 public class IpPoolManager {
 
-    private static final String IP_POOL_URL = "http://dev.kdlapi.com/api/getproxy/?orderid=983447234578095&num=100&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=1&method=2&an_an=1&an_ha=1&sp1=1&sp2=1&sep=1";
+    private static final String IP_POOL_URL = "http://dev.kdlapi.com/api/getproxy/?orderid=983447234578095&num=500&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=1&method=2&an_an=1&an_ha=1&sp1=1&sp2=1&sep=1";
     public static final String TYC_IP_POOL_KEY = "tyc_spider_key";
     public static final String QCC_IP_POOL_KEY = "qcc_spider_key";
 

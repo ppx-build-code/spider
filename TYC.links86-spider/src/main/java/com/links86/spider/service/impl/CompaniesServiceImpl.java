@@ -72,7 +72,6 @@ public class CompaniesServiceImpl implements CompaniesService {
         boolean flag1 = true;
         while (flag1) {
             try {
-                Thread.sleep((long) (Math.random()*2000));
                 Object[] ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
                 ResponseEntity<String> result = req(reqUrlEnum.getUrl(), reqUrlEnum, param, ip);
@@ -95,7 +94,7 @@ public class CompaniesServiceImpl implements CompaniesService {
                     while (flag2) {
                         try {
 
-                            Thread.sleep((long) (Math.random()*5000));
+                            Thread.sleep((long) (Math.random()*2000));
 
                             result = req(url, reqUrlEnum, null, ip);
 
