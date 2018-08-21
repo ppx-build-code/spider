@@ -3,19 +3,19 @@ package com.links86.spider.scheduled;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
+import com.links86.spider.repository.TyMapper;
 import com.links86.spider.service.CompaniesService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,14 +29,48 @@ public class ScheduledTasks {
 
     @NonNull
     private CompaniesService companiesService;
+    @NonNull
+    private TyMapper tyMapper;
 
-    @Scheduled(fixedRate = 60000)
+
+    class TinySpider implements Runnable {
+        @Override
+        public void run() {
+            while(true){
+                List<CompanyDO> companyDOs = new ArrayList<>();
+                List<Map<String, String>> ts = tyMapper.getTyDirectlyUrl("%上海%", 5);
+                if(ts == null || ts.size() == 0){
+                    break;
+                }
+                for(Map<String, String> east : ts){
+                    CompanyDO companyDO = companiesService.getTycDirectly(east.get("id"), east.get("name"), east.get("url").replace("www", "m"));
+                    tyMapper.updateFlag(east.get("id"));
+                    companyDOs.add(companyDO);
+                }
+                companiesService.saveNew(companyDOs);
+
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 1000000)
+    public void godSpider(){
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
+
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50,TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 300; i++){
+            poolExecutor.execute(new TinySpider());
+        }
+        poolExecutor.shutdown();
+    }
+
+    //    @Scheduled(fixedRate = 60000)
     public void writeDataFromTyc() throws InterruptedException {
 
         log.debug("begin get data ...");
 
         // 从数据库中获取需完善信息的企业列表
-        List<CompanyEast> ts = companiesService.listsByEast(3, 50);
+        List<CompanyEast> ts = companiesService.listsByEast(3, 500);
 
         // 爬取数据填充列表
         if (ts == null || ts.size() == 0) {
@@ -45,7 +79,7 @@ public class ScheduledTasks {
 
         List<CompanyDO> companyDOs = new ArrayList<>();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
 
         ts.parallelStream().forEach(t -> {
             executorService.execute(() -> {
@@ -65,7 +99,7 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 50000)
+    //    @Scheduled(fixedRate = 50000)
     public void writeDataFromQcc() throws InterruptedException {
         log.debug("begin qcc ...");
         List<CompanyDO> ts = companiesService.listsByNew(2, 10);

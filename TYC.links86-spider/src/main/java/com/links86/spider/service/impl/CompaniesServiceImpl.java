@@ -72,6 +72,7 @@ public class CompaniesServiceImpl implements CompaniesService {
         boolean flag1 = true;
         while (flag1) {
             try {
+                log.debug("in get, before getIpAndPort");
                 Object[] ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
                 ResponseEntity<String> result = req(reqUrlEnum.getUrl(), reqUrlEnum, param, ip);
@@ -106,6 +107,7 @@ public class CompaniesServiceImpl implements CompaniesService {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            log.debug("in get's catch, before getIpAndPort");
                             ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
                             ipPoolManager.delOne(reqUrlEnum.getKey());
                         }
@@ -116,6 +118,7 @@ public class CompaniesServiceImpl implements CompaniesService {
                     ipPoolManager.delOne(reqUrlEnum.getKey());
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 ipPoolManager.delOne(reqUrlEnum.getKey());
             }
         }
@@ -133,8 +136,8 @@ public class CompaniesServiceImpl implements CompaniesService {
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(tempIp[0].toString(), (int) tempIp[1]));
 
                 requestFactory.setProxy(proxy);
-                requestFactory.setConnectTimeout(10000);
-                requestFactory.setReadTimeout(10000);
+                requestFactory.setConnectTimeout(5000);
+                requestFactory.setReadTimeout(5000);
                 RestTemplate restTemplate = new RestTemplate(requestFactory);
                 restTemplate.setInterceptors(Stream.of(new LoggingRequestsInterceptor()).collect(Collectors.toList()));
 
@@ -156,7 +159,9 @@ public class CompaniesServiceImpl implements CompaniesService {
                     return result;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 ipPoolManager.delOne(reqUrlEnum.getKey());
+                log.debug("in req, before getIpAndPort");
                 tempIp = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
             }
         }
@@ -320,5 +325,38 @@ public class CompaniesServiceImpl implements CompaniesService {
     @Override
     public void saveNew(List<CompanyDO> companyDOs) {
         company.save(companyDOs);
+    }
+
+    @Override
+    public CompanyDO getTycDirectly(String id, String name, String url){
+        CompanyDO companyDO = new CompanyDO();
+        companyDO.setId(id);
+        companyDO.setFlag(2);
+        companyDO.setName(name);
+        getDirecty(companyDO, url);
+        return companyDO;
+    }
+
+    private void getDirecty(CompanyDO companyDO, String url) {
+        boolean flag2 = true;
+        Object[] ip;
+        while (flag2) {
+            try {
+                ip = ipPoolManager.getIpAndPort(ReqUrlEnum.TYC.getKey());
+                ResponseEntity<String> result = req(url, ReqUrlEnum.TYC, null, ip);
+
+                if (result.getStatusCode() == HttpStatus.OK) {
+                    String content = result.getBody();
+                    handleDetail(content, companyDO, ReqUrlEnum.TYC);
+
+                    flag2 = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.debug("in get's catch, before getIpAndPort");
+                ipPoolManager.delOne(ReqUrlEnum.TYC.getKey());
+            }
+
+        }
     }
 }
