@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1a99e04b-8cd0-4747-b86a-917d609bf4e0" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/TycApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/cache/RedisCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyTyDO.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/domain/dao/CompanyTyDO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/CompanyDataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/CompanyDataManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/scheduled/ScheduledTasks.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/CompaniesService.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/CompaniesService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TYC.links86-spider/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/TYC.links86-spider/src/main/resources/application.properties" afterDir="false" />
-    </list>
+    <list default="true" id="1a99e04b-8cd0-4747-b86a-917d609bf4e0" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/TYC.links86-spider/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -101,8 +91,8 @@
       <file leaf-file-name="IpPoolManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="69" column="40" lean-forward="true" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
+            <state relative-caret-position="375">
+              <caret line="43" column="62" lean-forward="true" selection-start-line="43" selection-start-column="62" selection-end-line="43" selection-end-column="62" />
             </state>
           </provider>
         </entry>
@@ -183,8 +173,8 @@
       <file leaf-file-name="CompanyDataManager.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/CompanyDataManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+            <state relative-caret-position="151">
+              <caret line="39" column="51" lean-forward="true" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -688,7 +678,7 @@
       <workItem from="1534582889896" duration="2490000" />
       <workItem from="1534681893535" duration="1386000" />
       <workItem from="1534728954700" duration="103000" />
-      <workItem from="1534901705345" duration="13018000" />
+      <workItem from="1534901705345" duration="13530000" />
     </task>
     <task id="LOCAL-00001" summary="changed">
       <created>1534741006335</created>
@@ -701,7 +691,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="122641000" />
+    <option name="totallyTimeSpent" value="123153000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -714,7 +704,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
@@ -729,16 +718,16 @@
       <window_info id="UI Designer" order="4" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.5842932" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3294979" />
-      <window_info anchor="bottom" id="Messages" order="11" visible="true" weight="0.32820514" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.32820514" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="bottom" id="Java Enterprise" order="12" weight="0.32879582" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.4851282" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.4851282" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32984293" />
       <window_info anchor="bottom" id="Spring" order="8" weight="0.3294979" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3374359" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49895397" visible="true" weight="0.2893773" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49895397" visible="true" weight="0.2893773" />
       <window_info anchor="right" id="Bean Validation" order="7" />
       <window_info id="Web" order="7" sideWeight="0.501046" side_tool="true" weight="0.25506938" />
       <window_info anchor="right" id="SciView" order="10" />
@@ -1102,13 +1091,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="69" column="40" lean-forward="true" selection-start-line="69" selection-start-column="40" selection-end-line="69" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/service/impl/CompaniesServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1547">
@@ -1128,10 +1110,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/IpPoolManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="43" column="62" lean-forward="true" selection-start-line="43" selection-start-column="62" selection-end-line="43" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TYC.links86-spider/src/main/java/com/links86/spider/manager/CompanyDataManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+        <state relative-caret-position="151">
+          <caret line="39" column="51" lean-forward="true" selection-start-line="39" selection-start-column="51" selection-end-line="39" selection-end-column="51" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
