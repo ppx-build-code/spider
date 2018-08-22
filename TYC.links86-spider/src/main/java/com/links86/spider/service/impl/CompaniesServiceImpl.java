@@ -6,7 +6,6 @@ import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
 import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.interceptor.LoggingRequestsInterceptor;
-import com.links86.spider.manager.CompanyDataManager;
 import com.links86.spider.manager.IpPoolManager;
 import com.links86.spider.repository.CompanyEastRepositry;
 import com.links86.spider.repository.CompanyRepository;
@@ -15,6 +14,7 @@ import com.links86.spider.service.CompaniesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.*;
@@ -22,8 +22,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
-import java.io.IOException;
 import java.net.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,7 +85,7 @@ public class CompaniesServiceImpl implements CompaniesService {
                         continue;
                     }
 
-                    String url = reqUrlEnum.getDetailPrefix() + suffix;
+                    String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
 
                     // 处理列表中需要截取的数据
                     handleLists(content, companyDO, reqUrlEnum);
@@ -286,6 +284,43 @@ public class CompaniesServiceImpl implements CompaniesService {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
             log.debug("经营范围 > > > " + businessScope);
             companyDO.setBusinessScope(businessScope);
+        } else if (reqUrlEnum == ReqUrlEnum.QXB) {
+            content = StringUtils.substringBetween(content,"window.__INITIAL_STATE__=", ";(function(){var s;(s=document.currentScript");
+            log.debug(content);
+
+            JSONObject jsonObject = new JSONObject(content);
+
+            JSONObject entGSDetail = jsonObject.getJSONObject("enterprise").getJSONObject("entGSDetail");
+            String legal = entGSDetail.get("operName").toString();
+            String startTime = entGSDetail.get("startDate").toString();
+            String capitalInvested = entGSDetail.get("regCapi").toString();
+
+            JSONObject regInfo = entGSDetail.getJSONObject("regInfo");
+            String type = regInfo.get("econKind").toString();
+            String registerNumber = regInfo.get("regNo").toString();
+            String orgCode = regInfo.get("orgNo").toString();
+            String creditCode = regInfo.get("creditNo").toString();
+            String status = regInfo.get("status").toString();
+            String businessScope = regInfo.get("scope").toString();
+            String address = regInfo.get("address").toString();
+            String terms = regInfo.get("businessTerm").toString();
+            String checkDate = regInfo.get("checkDate").toString();
+            String registerAuthority = regInfo.get("belongOrg").toString();
+
+            log.debug("法人 {}", legal);
+            log.debug("注册时间 {}", startTime);
+            log.debug("注册资本 {}", capitalInvested);
+            log.debug("企业类型 {}", type);
+            log.debug("工商注册号 {}", registerNumber);
+            log.debug("组织机构代码 {}", orgCode);
+            log.debug("统一信用代码 {}", creditCode);
+            log.debug("企业状态 {}", status);
+            log.debug("经营范围 {}", businessScope);
+            log.debug("地址 {}", address);
+            log.debug("经营期限 {}", terms);
+            log.debug("发照时间 {}", checkDate);
+            log.debug("登记机关 {}", registerAuthority);
+
         }
     }
 

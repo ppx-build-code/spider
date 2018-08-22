@@ -134,7 +134,7 @@ public class ScheduledTasks {
     public void writeDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
         List<CompanyEast> ts = companiesService.listsByEast(3, 2);
-        CompanyDO companyDO = companiesService.getQxb(ts.get(0).getId(), ts.get(1).getName());
+        CompanyDO companyDO = companiesService.getQxb("123123", "集商网络科技上海");
     }
 
     //@Scheduled(fixedRate = 3000)

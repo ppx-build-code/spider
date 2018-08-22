@@ -4,9 +4,26 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ReqUrlEnum {
-    TYC(1, "https://m.tianyancha.com/search?key={1}", "tyc_spider_key", "http://m.tianyancha.com/", "https://m.tianyancha.com/company", "\" style=\"word-break:break-all;", "https://m.tianyancha.com/company"),
-    QCC(2, "http://m.qichacha.com/search?key={1}", "qcc_spider_key","http://m.qichacha.com/", "<a href=\"/firm_", "\" class=\"a-decoration\"", "http://m.qichacha.com/firm_"),
-    QXB(3, "https://m.qixin.com/search/{1}.html", "qxb_spider_key", "http://m.qixin.com/", "", "", "");
+    TYC(1, "https://m.tianyancha.com/search?key={1}",
+            "tyc_spider_key",
+            "http://m.tianyancha.com/",
+            "https://m.tianyancha.com/company",
+            "\" style=\"word-break:break-all;",
+            "https://m.tianyancha.com/company",
+            ""),
+    QCC(2, "http://m.qichacha.com/search?key={1}",
+            "qcc_spider_key",
+            "http://m.qichacha.com/",
+            "<a href=\"/firm_",
+            "\" class=\"a-decoration\"",
+            "http://m.qichacha.com/firm_",
+            ""),
+    QXB(3, "https://m.qixin.com/search/{1}.html",
+            "qxb_spider_key",
+            "http://m.qixin.com/",
+            "<div class=\"new-search-result\" data-v-143265d9><a href=\"",
+            "\" data-v-143265d9","https://m.qixin.com/",
+            "/info"),
     ;
     private int num;
     private String url;
@@ -15,6 +32,15 @@ public enum ReqUrlEnum {
     private String urlPrefix;
     private String urlSuffix;
     private String detailPrefix;
+    private String detailSuffix;
+
+    public String getDetailSuffix() {
+        return detailSuffix;
+    }
+
+    public void setDetailSuffix(String detailSuffix) {
+        this.detailSuffix = detailSuffix;
+    }
 
     public int getNum() {
         return num;
