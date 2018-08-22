@@ -58,7 +58,7 @@ public class ScheduledTasks {
         }
     }
 
-    @Scheduled(fixedRate = 1000000)
+    //@Scheduled(fixedRate = 1000000)
     public void godSpider(){
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
 
@@ -130,7 +130,14 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 1000000)
+    public void writeDataFromQxb() throws InterruptedException {
+        log.debug("begin qxb ...");
+        List<CompanyEast> ts = companiesService.listsByEast(3, 2);
+        CompanyDO companyDO = companiesService.getQxb(ts.get(0).getId(), ts.get(1).getName());
+    }
+
+    //@Scheduled(fixedRate = 3000)
     public void fillingCompany() {
         companyDataManager.adds();
     }

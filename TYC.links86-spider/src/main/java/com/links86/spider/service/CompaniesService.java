@@ -13,6 +13,8 @@ public interface CompaniesService {
 
     CompanyDO getQcc(CompanyDO companyDO);
 
+    CompanyDO getQxb(String id, String name);
+
     List<CompanyEast> listsByEast(Integer flag, Integer limit);
 
     List<CompanyDO> listsByNew(Integer flag, Integer limit);

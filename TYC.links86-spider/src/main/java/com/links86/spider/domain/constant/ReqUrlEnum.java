@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 public enum ReqUrlEnum {
     TYC(1, "https://m.tianyancha.com/search?key={1}", "tyc_spider_key", "http://m.tianyancha.com/", "https://m.tianyancha.com/company", "\" style=\"word-break:break-all;", "https://m.tianyancha.com/company"),
     QCC(2, "http://m.qichacha.com/search?key={1}", "qcc_spider_key","http://m.qichacha.com/", "<a href=\"/firm_", "\" class=\"a-decoration\"", "http://m.qichacha.com/firm_"),
+    QXB(3, "https://m.qixin.com/search/{1}.html", "qxb_spider_key", "http://m.qixin.com/", "", "", "");
     ;
     private int num;
     private String url;

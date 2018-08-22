@@ -6,6 +6,7 @@ import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
 import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.interceptor.LoggingRequestsInterceptor;
+import com.links86.spider.manager.CompanyDataManager;
 import com.links86.spider.manager.IpPoolManager;
 import com.links86.spider.repository.CompanyEastRepositry;
 import com.links86.spider.repository.CompanyRepository;
@@ -221,6 +222,9 @@ public class CompaniesServiceImpl implements CompaniesService {
             companyDO.setStatus(CompanyStatusEnum.getCode(status));
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             // todo
+        } else if (reqUrlEnum == ReqUrlEnum.QXB) {
+            System.out.println(content);
+
         }
 
     }
@@ -300,6 +304,16 @@ public class CompaniesServiceImpl implements CompaniesService {
         get(companyDO.getName(), ReqUrlEnum.QCC, companyDO);
         companyDO.setFlag(1);
         return companyDO;
+    }
+
+    @Override
+    public CompanyDO getQxb(String id, String name) {
+        CompanyDO companyDO = new CompanyDO();
+        companyDO.setId(id);
+        companyDO.setFlag(2);
+        companyDO.setName(name);
+        get(name, ReqUrlEnum.QXB, companyDO);
+        return null;
     }
 
     @Override
