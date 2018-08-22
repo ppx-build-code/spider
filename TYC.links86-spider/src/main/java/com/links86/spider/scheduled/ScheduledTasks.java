@@ -3,6 +3,8 @@ package com.links86.spider.scheduled;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
+import com.links86.spider.domain.dao.CompanyTyDO;
+import com.links86.spider.manager.CompanyDataManager;
 import com.links86.spider.repository.TyMapper;
 import com.links86.spider.service.CompaniesService;
 import lombok.NonNull;
@@ -31,6 +33,10 @@ public class ScheduledTasks {
     private CompaniesService companiesService;
     @NonNull
     private TyMapper tyMapper;
+    @NonNull
+    private CompanyDataManager companyDataManager;
+
+    private static List<CompanyTyDO> companyTyDOs;
 
 
     class TinySpider implements Runnable {
@@ -123,5 +129,10 @@ public class ScheduledTasks {
         }
 
         companiesService.saveNew(companyDOs);
+    }
+
+    @Scheduled(fixedRate = 3000)
+    public void fillingCompany() {
+        companyDataManager.adds();
     }
 }

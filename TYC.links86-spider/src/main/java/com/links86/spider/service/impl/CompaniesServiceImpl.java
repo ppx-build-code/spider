@@ -4,10 +4,12 @@ import com.links86.spider.domain.constant.CompanyStatusEnum;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
+import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.interceptor.LoggingRequestsInterceptor;
 import com.links86.spider.manager.IpPoolManager;
 import com.links86.spider.repository.CompanyEastRepositry;
 import com.links86.spider.repository.CompanyRepository;
+import com.links86.spider.repository.CompanyTyRepository;
 import com.links86.spider.service.CompaniesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +62,10 @@ public class CompaniesServiceImpl implements CompaniesService {
     private static final String QCC_BUSINESS_SCOPE_PREFIX = "经营范围</div> <div class=\"basic-item-right\">";
     private static final String QCC_BUSINESS_SCOPE_SUFFIX = "<";
 
-    @Resource
-    private IpPoolManager ipPoolManager;
-    @Resource
-    private CompanyEastRepositry companyEastRepositry;
-    @Resource
-    private CompanyRepository company;
+    private final IpPoolManager ipPoolManager;
+    private final CompanyEastRepositry companyEastRepositry;
+    private final CompanyRepository company;
+    private final CompanyTyRepository companyTyRepository;
 
 
     private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
@@ -285,11 +285,6 @@ public class CompaniesServiceImpl implements CompaniesService {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        new CompaniesServiceImpl().get("阿里巴巴", ReqUrlEnum.TYC, new CompanyDO());
-        new CompaniesServiceImpl().get("阿里巴巴", ReqUrlEnum.QCC, new CompanyDO());
-    }
-
     @Override
     public CompanyDO getTyc(String id, String name) {
         CompanyDO companyDO = new CompanyDO();
@@ -315,6 +310,11 @@ public class CompaniesServiceImpl implements CompaniesService {
     @Override
     public List<CompanyDO> listsByNew(Integer flag, Integer limit) {
         return company.findAllByFlagEquals(new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "id")), flag);
+    }
+
+    @Override
+    public List<CompanyTyDO> listByTy(Integer flag, String name, Integer limit) {
+        return companyTyRepository.findAllByFlagEqualsAndComNameLike(flag, name, new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "id")));
     }
 
     @Override

@@ -1,7 +1,11 @@
 package com.links86.spider.manager;
 
+import com.links86.spider.cache.RedisCache;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +21,15 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class IpPoolManager {
 
     private static final String IP_POOL_URL = "http://dev.kdlapi.com/api/getproxy/?orderid=983447234578095&num=900&b_pcchrome=1&b_pcie=1&b_pcff=1&protocol=1&method=2&an_an=1&an_ha=1&sp1=1&sp2=1&sep=1";
     public static final String TYC_IP_POOL_KEY = "tyc_spider_key";
     public static final String QCC_IP_POOL_KEY = "qcc_spider_key";
 
-    @Resource
+    @NonNull
+    @Qualifier("formatRedisTemplate")
     private RedisTemplate redisTemplate;
 
     @Synchronized
