@@ -23,4 +23,6 @@ public interface CompaniesService {
 
     void saveNew(List<CompanyDO> companyDOs);
 
+    void updTy(CompanyTyDO companyTyDO);
+
 }

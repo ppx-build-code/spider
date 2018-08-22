@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,8 @@ public class IpPoolManager {
     public static final String TYC_IP_POOL_KEY = "tyc_spider_key";
     public static final String QCC_IP_POOL_KEY = "qcc_spider_key";
 
-    @NonNull
-    @Qualifier("formatRedisTemplate")
-    private RedisTemplate redisTemplate;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Synchronized
     private void addIps(String name) {
@@ -54,12 +54,17 @@ public class IpPoolManager {
 
     private String getOne(String name) {
         Long count = redisTemplate.opsForList().size(name);
-        if (count == 0) {
+        if (count < 10) {
             addIps(name);
-            return getOne(name);
         }
-        log.debug((String) redisTemplate.opsForList().index(name, new Random().nextInt((int)(count - 1))));
-        return (String) redisTemplate.opsForList().index(name, new Random().nextInt((int)(count - 1)));
+
+        for(;;count --){
+            String ip = (String) redisTemplate.opsForList().index(name, count);
+            if (ip != null) {
+                log.debug("{} is use {}", Thread.currentThread().getId(), ip);
+                return ip;
+            }
+        }
     }
 
     public boolean delOne(String name) {

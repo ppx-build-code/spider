@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@ComponentScan("com.links86")
 public class TycApplication {
 
 	public static void main(String[] args) {

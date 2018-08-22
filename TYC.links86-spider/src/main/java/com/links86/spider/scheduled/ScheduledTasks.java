@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * @author dyu
@@ -32,28 +34,25 @@ public class ScheduledTasks {
     @NonNull
     private CompaniesService companiesService;
     @NonNull
-    private TyMapper tyMapper;
-    @NonNull
     private CompanyDataManager companyDataManager;
-
-    private static List<CompanyTyDO> companyTyDOs;
-
 
     class TinySpider implements Runnable {
         @Override
         public void run() {
             while(true){
-                List<CompanyDO> companyDOs = new ArrayList<>();
-                List<Map<String, String>> ts = tyMapper.getTyDirectlyUrl("%上海%", 5);
-                if(ts == null || ts.size() == 0){
-                    break;
+
+                CompanyTyDO tyDO = companyDataManager.getOne();
+                if (tyDO == null) {
+                    try {
+                        Thread.sleep((long) (Math.random() * 2000));
+                        continue;
+                    } catch (InterruptedException e) {
+                        log.error(e.getMessage());
+                    }
                 }
-                for(Map<String, String> east : ts){
-                    CompanyDO companyDO = companiesService.getTycDirectly(east.get("id"), east.get("name"), east.get("url").replace("www", "m"));
-                    tyMapper.updateFlag(east.get("id"));
-                    companyDOs.add(companyDO);
-                }
-                companiesService.saveNew(companyDOs);
+                CompanyDO companyDO = companiesService.getTycDirectly(tyDO.getId().toString(), tyDO.getComName(), tyDO.getTyUrl().replace("www", "m"));
+                companiesService.updTy(tyDO);
+                companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
 
             }
         }
@@ -64,7 +63,7 @@ public class ScheduledTasks {
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50,TimeUnit.MILLISECONDS,bqueue);
-        for (int i = 0; i < 300; i++){
+        for (int i = 0; i < 200; i++){
             poolExecutor.execute(new TinySpider());
         }
         poolExecutor.shutdown();

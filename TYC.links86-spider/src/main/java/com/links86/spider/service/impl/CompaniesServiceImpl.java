@@ -159,7 +159,7 @@ public class CompaniesServiceImpl implements CompaniesService {
                     return result;
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e.getMessage());
                 ipPoolManager.delOne(reqUrlEnum.getKey());
                 log.debug("in req, before getIpAndPort");
                 tempIp = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
@@ -325,6 +325,12 @@ public class CompaniesServiceImpl implements CompaniesService {
     @Override
     public void saveNew(List<CompanyDO> companyDOs) {
         company.save(companyDOs);
+    }
+
+    @Override
+    public void updTy(CompanyTyDO companyTyDO) {
+        companyTyDO.setFlag(1);
+        companyTyRepository.save(companyTyDO);
     }
 
     @Override

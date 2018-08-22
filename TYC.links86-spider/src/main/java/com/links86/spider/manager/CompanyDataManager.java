@@ -1,14 +1,14 @@
 package com.links86.spider.manager;
 
-import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.service.CompaniesService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @author dyu
@@ -19,25 +19,38 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CompanyDataManager {
 
-    private static final String C_SPIDER_DATA_KEY = "spider:company:data:key";
+    private static volatile ArrayBlockingQueue arrayBlockingQueue;
 
-    @NonNull
-    @Qualifier("formatRedisTemplate")
-    private RedisTemplate redisTemplate;
+    public static ArrayBlockingQueue getArrayBlockingQueue() {
+        if (arrayBlockingQueue == null) {
+            arrayBlockingQueue =  new ArrayBlockingQueue(1000);
+        }
+        return arrayBlockingQueue;
+    }
 
     @NonNull
     private CompaniesService companiesService;
 
     public void adds() {
-        long num = redisTemplate.opsForList().size(C_SPIDER_DATA_KEY);
+        long num = getArrayBlockingQueue().size();
         if (num < 100) {
-            synchronized (C_SPIDER_DATA_KEY) {
-                redisTemplate.opsForList().leftPushAll(C_SPIDER_DATA_KEY, companiesService.listByTy(0, "%上海%", 1000));
+            synchronized (this) {
+                List<CompanyTyDO> companyTyDOS = companiesService.listByTy(0, "%上海%", 1000);
+                companyTyDOS.parallelStream().forEach(c -> {
+                    getArrayBlockingQueue().add(c);
+                });
             }
         }
     }
 
     public <T> T getOne() {
-        return (T) redisTemplate.opsForList().rightPop(C_SPIDER_DATA_KEY);
+        while (true) {
+            try {
+                return (T) getArrayBlockingQueue().take();
+            } catch (InterruptedException e) {
+                log.error("get data from queue has error : {}", e.getMessage());
+            }
+        }
+
     }
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * @author dyu
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 @Data
 @Entity(name = "company_ty_url")
 @NoArgsConstructor
-public class CompanyTyDO {
+public class CompanyTyDO implements Serializable {
     @Id
     private Integer id;
     private String comName;
