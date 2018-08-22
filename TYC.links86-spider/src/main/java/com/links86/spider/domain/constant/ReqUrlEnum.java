@@ -4,8 +4,17 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ReqUrlEnum {
-    TYC(1, "https://m.tianyancha.com/search?key={1}", "tyc_spider_key", "http://m.tianyancha.com/", "https://m.tianyancha.com/company", "\" style=\"word-break:break-all;", "https://m.tianyancha.com/company"),
-    QCC(2, "http://m.qichacha.com/search?key={1}", "qcc_spider_key","http://m.qichacha.com/", "<a href=\"/firm_", "\" class=\"a-decoration\"", "http://m.qichacha.com/firm_"),
+    TYC(1, "https://m.tianyancha.com/search?key=%s",
+            "tyc_spider_key", "http://m.tianyancha.com/",
+            "https://m.tianyancha.com/company",
+            "\" style=\"word-break:break-all;",
+            "https://m.tianyancha.com/company"),
+    QCC(2, "http://m.qichacha.com/search?key=%s",
+            "qcc_spider_key",
+            "http://m.qichacha.com/",
+            "<a href=\"/firm_",
+            "\" class=\"a-decoration\"",
+            "http://m.qichacha.com/firm_"),
     ;
     private int num;
     private String url;

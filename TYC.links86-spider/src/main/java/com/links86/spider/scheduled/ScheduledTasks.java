@@ -69,13 +69,13 @@ public class ScheduledTasks {
         poolExecutor.shutdown();
     }
 
-    //    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60000)
     public void writeDataFromTyc() throws InterruptedException {
 
         log.debug("begin get data ...");
 
         // 从数据库中获取需完善信息的企业列表
-        List<CompanyEast> ts = companiesService.listsByEast(3, 500);
+        List<CompanyEast> ts = companiesService.listsByEast(3, 100);
 
         // 爬取数据填充列表
         if (ts == null || ts.size() == 0) {
@@ -84,7 +84,7 @@ public class ScheduledTasks {
 
         List<CompanyDO> companyDOs = new ArrayList<>();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        ExecutorService executorService = Executors.newFixedThreadPool(50);
 
         ts.parallelStream().forEach(t -> {
             executorService.execute(() -> {
@@ -104,17 +104,17 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    //    @Scheduled(fixedRate = 50000)
+    @Scheduled(fixedRate = 50000)
     public void writeDataFromQcc() throws InterruptedException {
         log.debug("begin qcc ...");
-        List<CompanyDO> ts = companiesService.listsByNew(2, 10);
+        List<CompanyDO> ts = companiesService.listsByNew(2, 50);
 
         if (ts == null || ts.size() == 0) {
             return;
         }
 
         List<CompanyDO> companyDOs = new ArrayList<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
 
         ts.parallelStream().forEach(t -> {
             executorService.execute(() -> {
@@ -130,7 +130,7 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 3000)
+    //@Scheduled(fixedRate = 3000)
     public void fillingCompany() {
         companyDataManager.adds();
     }
