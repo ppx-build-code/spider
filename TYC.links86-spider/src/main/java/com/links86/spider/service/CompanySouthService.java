@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CompanySouthService {
     List<CompanySouthDO> listsByFlag(Integer flag, Integer limit);
+
+    void upd(CompanySouthDO companySouthDO);
 }

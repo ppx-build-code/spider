@@ -1,5 +1,6 @@
 package com.links86.spider.scheduled;
 
+import com.links86.spider.domain.constant.QueueEnum;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
@@ -7,9 +8,12 @@ import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.manager.CompanyDataManager;
 import com.links86.spider.repository.TyMapper;
 import com.links86.spider.service.CompaniesService;
+import com.links86.spider.service.CompanySouthService;
+import com.links86.spider.thread.QxbSpiderThread;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -35,13 +39,15 @@ public class ScheduledTasks {
     private CompaniesService companiesService;
     @NonNull
     private CompanyDataManager companyDataManager;
+    @NonNull
+    private CompanySouthService companySouthService;
 
     class TinySpider implements Runnable {
         @Override
         public void run() {
             while(true){
 
-                CompanyTyDO tyDO = companyDataManager.getOne();
+                CompanyTyDO tyDO = companyDataManager.getOne(QueueEnum.EAST);
                 if (tyDO == null) {
                     try {
                         Thread.sleep((long) (Math.random() * 2000));
@@ -51,6 +57,9 @@ public class ScheduledTasks {
                     }
                 }
                 CompanyDO companyDO = companiesService.getTycDirectly(tyDO.getId().toString(), tyDO.getComName(), tyDO.getTyUrl().replace("www", "m"));
+                if (StringUtils.isBlank(companyDO.getAddress()) && StringUtils.isBlank(companyDO.getScore())) {
+                    continue;
+                }
                 companiesService.updTy(tyDO);
                 companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
 
@@ -133,8 +142,13 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 1000000)
     public void writeDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
-        List<CompanyEast> ts = companiesService.listsByEast(3, 2);
-        CompanyDO companyDO = companiesService.getQxb("123123", "集商网络科技上海");
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(30);
+
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50,TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 200; i++){
+            poolExecutor.execute(new QxbSpiderThread(companyDataManager, companySouthService, companiesService));
+        }
+        poolExecutor.shutdown();
     }
 
     //@Scheduled(fixedRate = 3000)

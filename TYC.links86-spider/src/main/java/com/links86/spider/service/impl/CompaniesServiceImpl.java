@@ -11,6 +11,7 @@ import com.links86.spider.repository.CompanyEastRepositry;
 import com.links86.spider.repository.CompanyRepository;
 import com.links86.spider.repository.CompanyTyRepository;
 import com.links86.spider.service.CompaniesService;
+import com.links86.spider.util.DynamicSpiderUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,129 +74,59 @@ public class CompaniesServiceImpl implements CompaniesService {
         boolean flag1 = true;
         while (flag1) {
             try {
-                log.debug("in get, before getIpAndPort");
-                Object[] ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
 
-                ResponseEntity<String> result = req(reqUrlEnum.getUrl(), reqUrlEnum, param, ip);
+                String content = req(reqUrlEnum.getUrl(), reqUrlEnum, param);
 
-                if (result.getStatusCode() == HttpStatus.OK) {
-                    String content = result.getBody();
-
-                    String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
-                    if (suffix == null) {
-                        ipPoolManager.delOne(reqUrlEnum.getKey());
-                        continue;
-                    }
-
-                    String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
-
-                    // 处理列表中需要截取的数据
-                    handleLists(content, companyDO, reqUrlEnum);
-
-                    boolean flag2 = true;
-                    while (flag2) {
-                        try {
-
-                            Thread.sleep((long) (Math.random()*2000));
-
-                            result = req(url, reqUrlEnum, null, ip);
-
-                            if (result.getStatusCode() == HttpStatus.OK) {
-                                content = result.getBody();
-                                handleDetail(content, companyDO, reqUrlEnum);
-
-                                flag2 = false;
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            log.debug("in get's catch, before getIpAndPort");
-                            ip = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
-                            ipPoolManager.delOne(reqUrlEnum.getKey());
-                        }
-
-                    }
-                    flag1 = false;
-                } else {
+                String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
+                if (suffix == null) {
                     ipPoolManager.delOne(reqUrlEnum.getKey());
+                    continue;
                 }
+
+                String url = reqUrlEnum.getDetailPrefix() + suffix;
+
+                // 处理列表中需要截取的数据
+                handleLists(content, companyDO, reqUrlEnum);
+
+                boolean flag2 = true;
+                int errors = 20;
+                while (flag2) {
+                    try {
+
+                        Thread.sleep((long) (Math.random()*2000));
+
+                        content = req(url, reqUrlEnum, null);
+                        handleDetail(content, companyDO, reqUrlEnum);
+
+                        flag2 = false;
+                    } catch (Exception e) {
+                        errors --;
+                        if (errors == 0) {
+                            flag2 = false;
+                        }
+                        log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
+                        log.debug("in get's catch, before getIpAndPort");
+                    }
+
+                }
+                flag1 = false;
             } catch (Exception e) {
-                e.printStackTrace();
-                ipPoolManager.delOne(reqUrlEnum.getKey());
+                log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
             }
         }
     }
 
 
-    private ResponseEntity<String> req(String url, ReqUrlEnum reqUrlEnum, String param, Object [] ip) {
-        Object [] tempIp = ip;
-
+    private String req(String url, ReqUrlEnum reqUrlEnum, String param) {
         while (true) {
             try {
-                SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-
-
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(tempIp[0].toString(), (int) tempIp[1]));
-
-                requestFactory.setProxy(proxy);
-                requestFactory.setConnectTimeout(5000);
-                requestFactory.setReadTimeout(5000);
-                RestTemplate restTemplate = new RestTemplate(requestFactory);
-                restTemplate.setInterceptors(Stream.of(new LoggingRequestsInterceptor()).collect(Collectors.toList()));
-
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.add("Accept", MediaType.ALL_VALUE);
-                httpHeaders.add("User-Agent", BROWER_SIGN);
-                httpHeaders.add("Referer", reqUrlEnum.getReferer());
-
-                HttpEntity<String> entity = new HttpEntity<>(null, httpHeaders);
-
-                ResponseEntity<String> result = null;
-                if (param == null) {
-                    result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-                } else {
-                    result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, param);
-                }
-
-                if (result.getStatusCode() == HttpStatus.OK) {
-                    return result;
-                }
+                return DynamicSpiderUtils.request(String.format(url, param));
             } catch (Exception e) {
                 log.error(e.getMessage());
                 ipPoolManager.delOne(reqUrlEnum.getKey());
                 log.debug("in req, before getIpAndPort");
-                tempIp = ipPoolManager.getIpAndPort(reqUrlEnum.getKey());
             }
         }
-
-
-    }
-
-    private String [] getCookieByQcc(Object [] ip) {
-        while (true) {
-            Object [] tempId = ip;
-            try {
-                SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-
-                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(tempId[0].toString(), (int) tempId[1]));
-
-                requestFactory.setProxy(proxy);
-                requestFactory.setConnectTimeout(10000);
-                requestFactory.setReadTimeout(10000);
-                RestTemplate restTemplate = new RestTemplate(requestFactory);
-
-                HttpHeaders httpHeaders = new HttpHeaders();
-                httpHeaders.add("User-Agent", BROWER_SIGN);
-                HttpEntity<String> entity = new HttpEntity<>(null, httpHeaders);
-
-                ResponseEntity<String> result = restTemplate.exchange("https://www.qichacha.com", HttpMethod.GET, entity, String.class);
-                HttpHeaders headers = result.getHeaders();
-                return new String[] {headers.getFirst(httpHeaders.SET_COOKIE), headers.getFirst(httpHeaders.SET_COOKIE2)};
-            } catch (Exception e) {
-                ipPoolManager.delOne(ReqUrlEnum.QCC.getKey());
-                tempId = ipPoolManager.getIpAndPort(ReqUrlEnum.QCC.getKey());
-            }
-        }
-
 
 
     }
@@ -243,6 +176,10 @@ public class CompaniesServiceImpl implements CompaniesService {
             String registration = StringUtils.substringBetween(content, TYC_REGISTRATION_AUTHORITY_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String address = StringUtils.substringBetween(content, TYC_COMPANY_ADDRESS_PREFIX, TYC_COMPANY_BASE_SUFFIX);
             String legal = StringUtils.substringBetween(content, TYC_LEGAL_PERSON_PREFIX, TYC_LEGAL_PERSON_SUFFIX);
+
+            if (StringUtils.isBlank(score) && StringUtils.isBlank(address)) {
+                throw new RuntimeException("get data from tyc error. please retry.");
+            }
 
             if (StringUtils.isNotBlank(website)) {
                 if (website.indexOf("</a>") != 0) {
@@ -394,24 +331,18 @@ public class CompaniesServiceImpl implements CompaniesService {
 
     private void getDirecty(CompanyDO companyDO, String url) {
         boolean flag2 = true;
-        Object[] ip;
         while (flag2) {
             try {
-                ip = ipPoolManager.getIpAndPort(ReqUrlEnum.TYC.getKey());
-                ResponseEntity<String> result = req(url, ReqUrlEnum.TYC, null, ip);
-
-                if (result.getStatusCode() == HttpStatus.OK) {
-                    String content = result.getBody();
-                    handleDetail(content, companyDO, ReqUrlEnum.TYC);
-
-                    flag2 = false;
-                }
+                String content = req(url, ReqUrlEnum.TYC, null);
+                handleDetail(content, companyDO, ReqUrlEnum.TYC);
+                flag2 = false;
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("request directy error : {}", e.getMessage());
                 log.debug("in get's catch, before getIpAndPort");
-                ipPoolManager.delOne(ReqUrlEnum.TYC.getKey());
             }
 
         }
     }
+
+
 }

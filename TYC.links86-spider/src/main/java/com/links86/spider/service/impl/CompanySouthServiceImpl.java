@@ -26,4 +26,10 @@ public class CompanySouthServiceImpl implements CompanySouthService {
     public List<CompanySouthDO> listsByFlag(Integer flag, Integer limit) {
         return companySouthRepository.findAllByFlagEquals(flag, new PageRequest(0, limit, new Sort(Sort.Direction.DESC, "id")));
     }
+
+    @Override
+    public void upd(CompanySouthDO companySouthDO) {
+        companySouthDO.setFlag(2);
+        companySouthRepository.save(companySouthDO);
+    }
 }

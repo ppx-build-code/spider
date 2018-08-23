@@ -9,7 +9,7 @@ public enum CompanyStatusEnum {
     IN(1, "在业"),
     ING(2, "存续"),
     REVOKE(3, "吊销"),
-    ＬOGOUT(4, "注销"),
+    LOGOUT(4, "注销"),
     OUT(5, "迁出"),
     ;
     private Integer code;
