@@ -22,7 +22,7 @@ public enum ReqUrlEnum {
             "qxb_spider_key",
             "http://m.qixin.com/",
             "<div class=\"new-search-result\" data-v-143265d9><a href=\"",
-            "\" data-v-143265d9","https://m.qixin.com/",
+            "\" data-v-143265d9","https://m.qixin.com",
             "/info"),
     ;
     private int num;
