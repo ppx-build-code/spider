@@ -1,6 +1,8 @@
 package com.links86.spider.service.impl;
 
 import com.links86.spider.domain.dao.CompanySouthDO;
+import com.links86.spider.domain.dao.CompanySouthTempDO;
+import com.links86.spider.repository.CompanySTRepository;
 import com.links86.spider.repository.CompanySouthRepository;
 import com.links86.spider.service.CompanySouthService;
 import com.links86.spider.service.CompanySouthWestService;
@@ -22,6 +24,8 @@ public class CompanySouthServiceImpl implements CompanySouthService {
 
     @NonNull
     private CompanySouthRepository companySouthRepository;
+    @NonNull
+    private CompanySTRepository companySTRepository;
 
     @Override
     public List<CompanySouthDO> listsByFlag(Integer flag, Integer limit) {
@@ -32,5 +36,10 @@ public class CompanySouthServiceImpl implements CompanySouthService {
     public void upd(CompanySouthDO companySouthDO, Integer flag) {
         companySouthDO.setFlag(flag);
         companySouthRepository.save(companySouthDO);
+    }
+
+    @Override
+    public void addST(CompanySouthTempDO companySouthTempDO) {
+        companySTRepository.save(companySouthTempDO);
     }
 }

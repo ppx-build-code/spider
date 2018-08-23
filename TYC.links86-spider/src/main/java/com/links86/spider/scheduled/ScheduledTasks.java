@@ -12,6 +12,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -90,7 +91,9 @@ public class ScheduledTasks {
                 if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {
                     flag = 1;
                 } else {
-                    companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
+                    CompanySouthTempDO companySouthTempDO = new CompanySouthTempDO();
+                    BeanUtils.copyProperties(companyDO, companySouthTempDO);
+                    companySouthService.addST(companySouthTempDO);
                 }
                 companySouthService.upd(companySouthDO, flag);
             }
@@ -119,7 +122,9 @@ public class ScheduledTasks {
                 if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {
                     flag = 1;
                 } else {
-                    companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
+                    CompanySouthWestTempDO companySouthWestTempDO = new CompanySouthWestTempDO();
+                    BeanUtils.copyProperties(companyDO, companySouthWestTempDO);
+                    companySouthWestService.addSWT(companySouthWestTempDO);
                 }
                 companySouthWestService.upd(companySouthWestDO, flag);
             }
@@ -199,14 +204,25 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 100000)
+    @Scheduled(fixedRate = 72000000)
     public void writeDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
 
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 50, 50,TimeUnit.MILLISECONDS,bqueue);
-        for (int i = 0; i < 200; i++){
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 300; i++){
             poolExecutor.execute(new QxbSpider());
+        }
+        poolExecutor.shutdown();
+    }
+
+    @Scheduled(fixedRate = 72000000)
+    public void writeSwDataFromQxb() throws InterruptedException {
+        log.debug("begin qxb ...");
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
+
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 300; i++){
             poolExecutor.execute(new QxbSwSpider());
         }
         poolExecutor.shutdown();
