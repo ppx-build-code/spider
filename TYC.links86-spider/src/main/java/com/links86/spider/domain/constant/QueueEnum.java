@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum QueueEnum {
     SOUTH,
+    SW,
+    TY,
     EAST;
 
 

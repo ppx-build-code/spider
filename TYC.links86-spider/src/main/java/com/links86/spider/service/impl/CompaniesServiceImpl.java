@@ -10,6 +10,7 @@ import com.links86.spider.manager.IpPoolManager;
 import com.links86.spider.repository.CompanyEastRepositry;
 import com.links86.spider.repository.CompanyRepository;
 import com.links86.spider.repository.CompanyTyRepository;
+import com.links86.spider.scheduled.ScheduledTasks;
 import com.links86.spider.service.CompaniesService;
 import com.links86.spider.util.DynamicSpiderUtils;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +77,7 @@ public class CompaniesServiceImpl implements CompaniesService {
         while (flag1) {
             try {
 
-                String content = req(reqUrlEnum.getUrl(), reqUrlEnum, param);
+                String content = req(reqUrlEnum.getUrl(), param);
 
                 String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
                 if (suffix == null) {
@@ -95,7 +96,7 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                         Thread.sleep((long) (Math.random()*2000));
 
-                        content = req(url, reqUrlEnum, null);
+                        content = req(url, null);
                         handleDetail(content, companyDO, reqUrlEnum);
 
                         flag2 = false;
@@ -121,13 +122,13 @@ public class CompaniesServiceImpl implements CompaniesService {
     }
 
 
-    private String req(String url, ReqUrlEnum reqUrlEnum, String param) {
+    private String req(String url, String param) {
         while (true) {
             try {
-                return DynamicSpiderUtils.request(String.format(url, param));
+                int count = ScheduledTasks.orders.length;
+                return DynamicSpiderUtils.request(String.format(url, param), ScheduledTasks.orders[((int)(Math.random()*10)%count)]);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                ipPoolManager.delOne(reqUrlEnum.getKey());
                 log.debug("in req, before getIpAndPort");
             }
         }
@@ -349,7 +350,7 @@ public class CompaniesServiceImpl implements CompaniesService {
         boolean flag2 = true;
         while (flag2) {
             try {
-                String content = req(url, ReqUrlEnum.TYC, null);
+                String content = req(url, null);
                 handleDetail(content, companyDO, ReqUrlEnum.TYC);
                 flag2 = false;
             } catch (Exception e) {

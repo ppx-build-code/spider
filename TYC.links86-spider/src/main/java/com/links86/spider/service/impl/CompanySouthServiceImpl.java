@@ -3,6 +3,7 @@ package com.links86.spider.service.impl;
 import com.links86.spider.domain.dao.CompanySouthDO;
 import com.links86.spider.repository.CompanySouthRepository;
 import com.links86.spider.service.CompanySouthService;
+import com.links86.spider.service.CompanySouthWestService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

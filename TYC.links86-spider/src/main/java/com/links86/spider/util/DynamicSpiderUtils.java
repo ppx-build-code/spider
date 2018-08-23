@@ -26,14 +26,14 @@ public class DynamicSpiderUtils {
         return authHeader;
     }
 
-    public static String request(String url) throws IOException {
+    public static String request(String url, String orderNo) throws IOException {
 
         final String ip = "forward.xdaili.cn";//这里以正式服务器ip地址为准
         final int port = 80;//这里以正式服务器端口地址为准
 
         int timestamp = (int) (new Date().getTime()/1000);
         //以下订单号，secret参数 须自行改动
-        final String authHeader = authHeader("ZF20188220784hdE23h", "3588ac35b7f043b09d1d58762bb31000", timestamp);
+        final String authHeader = authHeader(orderNo, "3588ac35b7f043b09d1d58762bb31000", timestamp);
         ExecutorService thread = Executors.newFixedThreadPool(1);
 
         Connection.Response response = null;
@@ -49,10 +49,5 @@ public class DynamicSpiderUtils {
             e.printStackTrace();
         }
         return response.body();
-    }
-
-    public static void main(String[] args) throws IOException {
-        String content = DynamicSpiderUtils.request("https://m.tianyancha.com/search?key=集商网络科技上海");
-        System.out.println(content);
     }
 }

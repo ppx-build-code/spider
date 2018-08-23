@@ -21,4 +21,7 @@ public interface TyMapper {
 
     @Update("update company_ty_url set flag=1 where com_id=#{id}")
     void updateFlag(@Param("id") String id);
+
+    @Select("select order from xdaili_order")
+    List<String> getXDailiOrders();
 }
