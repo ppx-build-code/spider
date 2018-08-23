@@ -274,6 +274,7 @@ public class CompaniesServiceImpl implements CompaniesService {
             companyDO.setRegisterAuthority(registerAuthority);
             companyDO.setAddress(address);
             companyDO.setLegal(legal);
+            companyDO.setBusinessScope(businessScope);
 
         }
     }

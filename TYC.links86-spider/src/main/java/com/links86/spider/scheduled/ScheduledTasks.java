@@ -31,7 +31,18 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ScheduledTasks {
 
-    public static String[] orders = {"ZF20188232822XUU9hV", "ZF20188220784hdE23h", "ZF20188236458veV63t"};
+    public static String[] orders = {
+            "ZF20188220784hdE23h",
+            "ZF20188231517gfxDNr",
+            "ZF20188231833pqgIoj",
+            "ZF20188232249flTtBS",
+            "ZF20188232822XUU9hV",
+            "ZF20188236458veV63t",
+            "ZF20188237111roQRSc",
+            "ZF20188238442bdYhL2",
+            "ZF20188238471F8VArB",
+            "ZF20188239958j3xZmu"
+    };
 
     @NonNull
     private CompaniesService companiesService;
@@ -143,7 +154,7 @@ public class ScheduledTasks {
         poolExecutor.shutdown();
     }
 
-    @Scheduled(fixedRate = 60000)
+//    @Scheduled(fixedRate = 60000)
     public void writeDataFromTyc() throws InterruptedException {
 
         log.debug("begin get data ...");
@@ -178,7 +189,7 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 50000)
+//    @Scheduled(fixedRate = 50000)
     public void writeDataFromQcc() throws InterruptedException {
         log.debug("begin qcc ...");
         List<CompanyDO> ts = companiesService.listsByNew(2, 10);
@@ -216,7 +227,7 @@ public class ScheduledTasks {
         poolExecutor.shutdown();
     }
 
-    @Scheduled(fixedRate = 72000000)
+//    @Scheduled(fixedRate = 72000000)
     public void writeSwDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
@@ -231,12 +242,12 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 3000)
     public void fillingSouthWestCompany() {
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                companyDataManager.adds(QueueEnum.SW);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                companyDataManager.adds(QueueEnum.SW);
+//            }
+//        }).start();
 
         new Thread(new Runnable() {
             @Override
@@ -255,5 +266,9 @@ public class ScheduledTasks {
                 orders[i] = strs.get(i);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(orders[(int)(Math.random()*10)%(orders.length)]);
     }
 }
