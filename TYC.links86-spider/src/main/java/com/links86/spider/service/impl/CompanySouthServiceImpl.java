@@ -28,8 +28,8 @@ public class CompanySouthServiceImpl implements CompanySouthService {
     }
 
     @Override
-    public void upd(CompanySouthDO companySouthDO) {
-        companySouthDO.setFlag(2);
+    public void upd(CompanySouthDO companySouthDO, Integer flag) {
+        companySouthDO.setFlag(flag);
         companySouthRepository.save(companySouthDO);
     }
 }

@@ -4,27 +4,23 @@ import com.links86.spider.domain.constant.QueueEnum;
 import com.links86.spider.domain.constant.ReqUrlEnum;
 import com.links86.spider.domain.dao.CompanyDO;
 import com.links86.spider.domain.dao.CompanyEast;
+import com.links86.spider.domain.dao.CompanySouthDO;
 import com.links86.spider.domain.dao.CompanyTyDO;
 import com.links86.spider.manager.CompanyDataManager;
-import com.links86.spider.repository.TyMapper;
 import com.links86.spider.service.CompaniesService;
 import com.links86.spider.service.CompanySouthService;
-import com.links86.spider.thread.QxbSpiderThread;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * @author dyu
@@ -66,6 +62,36 @@ public class ScheduledTasks {
             }
         }
     }
+
+    class QxbSpider implements Runnable {
+        @Override
+        public void run() {
+            while (true) {
+                CompanySouthDO companySouthDO = companyDataManager.getOne(QueueEnum.SOUTH);
+
+                if (companySouthDO == null) {
+                    try {
+                        Thread.sleep((long) (Math.random() * 2000));
+                        continue;
+                    } catch (InterruptedException e) {
+                        log.error(e.getMessage());
+                        continue;
+                    }
+                }
+
+                CompanyDO companyDO = companiesService.getQxb(companySouthDO.getId(), companySouthDO.getName());
+
+                int flag = 2;
+                if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {
+                    flag = 1;
+                } else {
+                    companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
+                }
+                companySouthService.upd(companySouthDO, flag);
+            }
+        }
+    }
+
 
     //@Scheduled(fixedRate = 1000000)
     public void godSpider(){
@@ -139,20 +165,20 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 1000000)
+    @Scheduled(fixedRate = 100000)
     public void writeDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(30);
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50,TimeUnit.MILLISECONDS,bqueue);
         for (int i = 0; i < 200; i++){
-            poolExecutor.execute(new QxbSpiderThread(companyDataManager, companySouthService, companiesService));
+            poolExecutor.execute(new QxbSpider());
         }
         poolExecutor.shutdown();
     }
 
-    //@Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 3000)
     public void fillingCompany() {
-        companyDataManager.adds();
+        companyDataManager.addSouth();
     }
 }

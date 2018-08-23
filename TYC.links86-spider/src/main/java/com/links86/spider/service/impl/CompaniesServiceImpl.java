@@ -72,6 +72,7 @@ public class CompaniesServiceImpl implements CompaniesService {
 
     private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
         boolean flag1 = true;
+        int outer = 20;
         while (flag1) {
             try {
 
@@ -79,17 +80,16 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                 String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
                 if (suffix == null) {
-                    ipPoolManager.delOne(reqUrlEnum.getKey());
                     continue;
                 }
 
-                String url = reqUrlEnum.getDetailPrefix() + suffix;
+                String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
 
                 // 处理列表中需要截取的数据
                 handleLists(content, companyDO, reqUrlEnum);
 
                 boolean flag2 = true;
-                int errors = 20;
+                int inner = 20;
                 while (flag2) {
                     try {
 
@@ -100,8 +100,8 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                         flag2 = false;
                     } catch (Exception e) {
-                        errors --;
-                        if (errors == 0) {
+                        inner --;
+                        if (inner == 0) {
                             flag2 = false;
                         }
                         log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
@@ -111,6 +111,10 @@ public class CompaniesServiceImpl implements CompaniesService {
                 }
                 flag1 = false;
             } catch (Exception e) {
+                outer --;
+                if (outer == 0) {
+                    flag1 = false;
+                }
                 log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
             }
         }
@@ -154,8 +158,7 @@ public class CompaniesServiceImpl implements CompaniesService {
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             // todo
         } else if (reqUrlEnum == ReqUrlEnum.QXB) {
-            System.out.println(content);
-
+            // todo
         }
 
     }
@@ -217,13 +220,14 @@ public class CompaniesServiceImpl implements CompaniesService {
             companyDO.setRegisterAuthority(registration);
             companyDO.setAddress(address);
             companyDO.setLegal(legal);
+
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
             log.debug("经营范围 > > > " + businessScope);
             companyDO.setBusinessScope(businessScope);
+
         } else if (reqUrlEnum == ReqUrlEnum.QXB) {
             content = StringUtils.substringBetween(content,"window.__INITIAL_STATE__=", ";(function(){var s;(s=document.currentScript");
-            log.debug(content);
 
             JSONObject jsonObject = new JSONObject(content);
 
@@ -258,6 +262,18 @@ public class CompaniesServiceImpl implements CompaniesService {
             log.debug("发照时间 {}", checkDate);
             log.debug("登记机关 {}", registerAuthority);
 
+            companyDO.setCapitalInvested(capitalInvested);
+            companyDO.setStartTime(startTime);
+            companyDO.setStatus(CompanyStatusEnum.getCode(status));
+            companyDO.setRegisterNumber(registerNumber);
+            companyDO.setType(type);
+            companyDO.setOrgCode(orgCode);
+            companyDO.setCreditCode(creditCode);
+            companyDO.setTerms(terms);
+            companyDO.setRegisterAuthority(registerAuthority);
+            companyDO.setAddress(address);
+            companyDO.setLegal(legal);
+
         }
     }
 
@@ -285,7 +301,7 @@ public class CompaniesServiceImpl implements CompaniesService {
         companyDO.setFlag(2);
         companyDO.setName(name);
         get(name, ReqUrlEnum.QXB, companyDO);
-        return null;
+        return companyDO;
     }
 
     @Override

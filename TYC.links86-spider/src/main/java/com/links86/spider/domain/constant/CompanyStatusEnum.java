@@ -33,7 +33,7 @@ public enum CompanyStatusEnum {
 
     public static Integer getCode(String name) {
         return Stream.of(CompanyStatusEnum.values())
-                .filter(i -> i.name.equals(name))
+                .filter(i -> name.startsWith(i.name))
                 .findFirst()
                 .map(CompanyStatusEnum::getCode)
                 .orElse(null);
