@@ -75,10 +75,10 @@ public class ScheduledTasks {
 
         log.debug("begin get data ...");
 
-        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(300);
 
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50, TimeUnit.MILLISECONDS,bqueue);
-        for (int i = 0; i < 200; i++){
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(250, 300, 50, TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 250; i++){
             poolExecutor.execute(new SpiderEastThread(companyDataManager, companiesService));
         }
         poolExecutor.shutdown();
@@ -113,10 +113,10 @@ public class ScheduledTasks {
 //    @Scheduled(fixedRate = 1000000000)
     public void writeSouthDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
-        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(300);
 
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
-        for (int i = 0; i < 300; i++){
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(250, 300, 50, TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 250; i++){
             poolExecutor.execute(new SpiderSouthThread(companyDataManager, companiesService, companySouthService));
         }
         poolExecutor.shutdown();
@@ -125,10 +125,10 @@ public class ScheduledTasks {
 //    @Scheduled(fixedRate = 72000000)
     public void writeSwDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
-        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(300);
 
-        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
-        for (int i = 0; i < 300; i++){
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(250, 300, 50, TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 250; i++){
             poolExecutor.execute(new SpiderSouthWestThread(companyDataManager, companiesService, companySouthWestService));
         }
         poolExecutor.shutdown();

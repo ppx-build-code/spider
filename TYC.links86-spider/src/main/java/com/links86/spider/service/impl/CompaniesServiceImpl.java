@@ -91,69 +91,98 @@ public class CompaniesServiceImpl implements CompaniesService {
     private static final String QXB_JSON_SUFFIX = ";(function(){var s;(s=document.currentScript";
 
 
-    private final IpPoolManager ipPoolManager;
     private final CompanyEastRepositry companyEastRepositry;
     private final CompanyRepository company;
     private final CompanyTyRepository companyTyRepository;
 
 
-    private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
-        boolean flag1 = true;
-        int outer = 20;
-        while (flag1) {
-            try {
-
-                String content = req(reqUrlEnum.getUrl(), param);
-
-                String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
-                if (suffix == null) {
-                    continue;
-                }
-
-                String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
-
-                // 处理列表中需要截取的数据
-                handleLists(content, companyDO, reqUrlEnum);
-
-                boolean flag2 = true;
-                int inner = 20;
-                while (flag2) {
-                    try {
-
-                        Thread.sleep((long) (Math.random()*2000));
-
-                        content = req(url, null);
-                        handleDetail(content, companyDO, reqUrlEnum);
-
-                        if (reqUrlEnum == ReqUrlEnum.QXB) {
-                            Thread.sleep((long) (Math.random()*2000));
-
-                            url = StringUtils.replace(url, "info", "change");
-                            content = req(url, null);
-                            handleChange(content, companyDO);
-                        }
-
-                        flag2 = false;
-                    } catch (Exception e) {
-                        inner --;
-                        if (inner == 0) {
-                            flag2 = false;
-                        }
-                        log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
-                        log.debug("in get's catch, before getIpAndPort");
-                    }
-
-                }
-                flag1 = false;
-            } catch (Exception e) {
-                outer --;
-                if (outer == 0) {
-                    flag1 = false;
-                }
-                log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
-            }
+    private String doRetrieve(String url, String param, String prefix){
+        int count = 0;
+        String result = null;
+        while (count < 20) {
+            ++count;
+            result = req(url, param);
+            if (StringUtils.isEmpty(result) || !result.contains(prefix)) continue;
+            return result;
         }
+        return result;
     }
+
+    private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
+        String content = doRetrieve(reqUrlEnum.getUrl(), param, reqUrlEnum.getUrlPrefix());
+
+        String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
+        if (suffix == null) {
+            return;
+        }
+
+        String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
+        content = doRetrieve(url, null, TYC_COMPANY_ADDRESS_PREFIX);
+        if(StringUtils.isEmpty(content)) return;
+
+        handleDetail(content, companyDO, reqUrlEnum);
+
+        url = StringUtils.replace(url, "info", "change");
+        content = doRetrieve(url, null, QXB_JSON_PREFIX);
+        handleChange(content, companyDO);
+    }
+    //private void get(String param, ReqUrlEnum reqUrlEnum, CompanyDO companyDO) {
+    //    boolean flag1 = true;
+    //    int outer = 20;
+    //    while (flag1) {
+    //        try {
+    //
+    //            String content = req(reqUrlEnum.getUrl(), param);
+    //
+    //            String suffix = StringUtils.substringBetween(content, reqUrlEnum.getUrlPrefix(), reqUrlEnum.getUrlSuffix());
+    //            if (suffix == null) {
+    //                continue;
+    //            }
+    //
+    //            String url = reqUrlEnum.getDetailPrefix() + suffix + reqUrlEnum.getDetailSuffix();
+    //
+    //            // 处理列表中需要截取的数据
+    //            handleLists(content, companyDO, reqUrlEnum);
+    //
+    //            boolean flag2 = true;
+    //            int inner = 20;
+    //            while (flag2) {
+    //                try {
+    //
+    //                    Thread.sleep((long) (Math.random()*2000));
+    //
+    //                    content = req(url, null);
+    //                    handleDetail(content, companyDO, reqUrlEnum);
+    //
+    //                    if (reqUrlEnum == ReqUrlEnum.QXB) {
+    //                        Thread.sleep((long) (Math.random()*2000));
+    //
+    //                        url = StringUtils.replace(url, "info", "change");
+    //                        content = req(url, null);
+    //                        handleChange(content, companyDO);
+    //                    }
+    //
+    //                    flag2 = false;
+    //                } catch (Exception e) {
+    //                    inner --;
+    //                    if (inner == 0) {
+    //                        flag2 = false;
+    //                    }
+    //                    log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
+    //                    log.debug("in get's catch, before getIpAndPort");
+    //                }
+    //
+    //            }
+    //            flag1 = false;
+    //        } catch (Exception e) {
+    //            outer --;
+    //            if (outer == 0) {
+    //                flag1 = false;
+    //            }
+    //            log.error("get data from {} error : {}", reqUrlEnum.getReferer(), e.getMessage());
+    //        }
+    //    }
+    //}
 
 
     private String req(String url, String param) {

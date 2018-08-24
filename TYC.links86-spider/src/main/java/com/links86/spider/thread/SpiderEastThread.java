@@ -36,12 +36,13 @@ public class SpiderEastThread implements Runnable{
             CompanyDO companyDO = companiesService.getQxb(companyEast.getId(), companyEast.getName());
 
             int flag = 2;
-            if (StringUtils.isBlank(companyDO.getAddress()) && StringUtils.isBlank(companyDO.getScore())) {
+            if (StringUtils.isBlank(companyDO.getAddress())) {
                 flag = 1;
+            }else{
+                companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
             }
             companyEast.setFlag(flag);
             companiesService.save(Stream.of(companyEast).collect(Collectors.toList()));
-            companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
 
         }
     }
