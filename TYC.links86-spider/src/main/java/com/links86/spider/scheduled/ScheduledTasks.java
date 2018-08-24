@@ -8,6 +8,10 @@ import com.links86.spider.repository.TyMapper;
 import com.links86.spider.service.CompaniesService;
 import com.links86.spider.service.CompanySouthService;
 import com.links86.spider.service.CompanySouthWestService;
+import com.links86.spider.thread.SpiderEastThread;
+import com.links86.spider.thread.SpiderSouthThread;
+import com.links86.spider.thread.SpiderSouthWestThread;
+import com.links86.spider.thread.SpiderTyThread;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,141 +59,32 @@ public class ScheduledTasks {
     @NonNull
     private TyMapper tyMapper;
 
-    class TinySpider implements Runnable {
-        @Override
-        public void run() {
-            while(true){
-
-                CompanyTyDO tyDO = companyDataManager.getOne(QueueEnum.TY);
-                if (tyDO == null) {
-                    try {
-                        Thread.sleep((long) (Math.random() * 2000));
-                        continue;
-                    } catch (InterruptedException e) {
-                        log.error(e.getMessage());
-                    }
-                }
-                CompanyDO companyDO = companiesService.getTycDirectly(tyDO.getId().toString(), tyDO.getComName(), tyDO.getTyUrl().replace("www", "m"));
-                if (StringUtils.isBlank(companyDO.getAddress()) && StringUtils.isBlank(companyDO.getScore())) {
-                    continue;
-                }
-                companiesService.updTy(tyDO);
-                companiesService.saveNew(Stream.of(companyDO).collect(Collectors.toList()));
-
-            }
-        }
-    }
-
-    class QxbSpider implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                CompanySouthDO companySouthDO = companyDataManager.getOne(QueueEnum.SOUTH);
-
-                if (companySouthDO == null) {
-                    try {
-                        Thread.sleep((long) (Math.random() * 2000));
-                        continue;
-                    } catch (InterruptedException e) {
-                        log.error(e.getMessage());
-                        continue;
-                    }
-                }
-
-                CompanyDO companyDO = companiesService.getQxb(companySouthDO.getId(), companySouthDO.getName());
-
-                int flag = 2;
-                if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {
-                    flag = 1;
-                } else {
-                    CompanySouthTempDO companySouthTempDO = new CompanySouthTempDO();
-                    BeanUtils.copyProperties(companyDO, companySouthTempDO);
-                    companySouthService.addST(companySouthTempDO);
-                }
-                companySouthService.upd(companySouthDO, flag);
-            }
-        }
-    }
-
-    class QxbSwSpider implements Runnable {
-        @Override
-        public void run() {
-            while (true) {
-                CompanySouthWestDO companySouthWestDO = companyDataManager.getOne(QueueEnum.SW);
-
-                if (companySouthWestDO == null) {
-                    try {
-                        Thread.sleep((long) (Math.random() * 2000));
-                        continue;
-                    } catch (InterruptedException e) {
-                        log.error(e.getMessage());
-                        continue;
-                    }
-                }
-
-                CompanyDO companyDO = companiesService.getQxb(companySouthWestDO.getId(), companySouthWestDO.getName());
-
-                int flag = 2;
-                if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {
-                    flag = 1;
-                } else {
-                    CompanySouthWestTempDO companySouthWestTempDO = new CompanySouthWestTempDO();
-                    BeanUtils.copyProperties(companyDO, companySouthWestTempDO);
-                    companySouthWestService.addSWT(companySouthWestTempDO);
-                }
-                companySouthWestService.upd(companySouthWestDO, flag);
-            }
-        }
-    }
-
-
-    //@Scheduled(fixedRate = 1000000)
+//    @Scheduled(fixedRate = 100000000)
     public void godSpider(){
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50,TimeUnit.MILLISECONDS,bqueue);
         for (int i = 0; i < 200; i++){
-            poolExecutor.execute(new TinySpider());
+            poolExecutor.execute(new SpiderTyThread(companyDataManager, companiesService));
         }
         poolExecutor.shutdown();
     }
 
-//    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 500000000)
     public void writeDataFromTyc() throws InterruptedException {
 
         log.debug("begin get data ...");
 
-        // 从数据库中获取需完善信息的企业列表
-        List<CompanyEast> ts = companiesService.listsByEast(3, 500);
+        BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(20);
 
-        // 爬取数据填充列表
-        if (ts == null || ts.size() == 0) {
-            return;
+        ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 20, 50, TimeUnit.MILLISECONDS,bqueue);
+        for (int i = 0; i < 200; i++){
+            poolExecutor.execute(new SpiderEastThread(companyDataManager, companiesService));
         }
-
-        List<CompanyDO> companyDOs = new ArrayList<>();
-
-        ExecutorService executorService = Executors.newFixedThreadPool(20);
-
-        ts.parallelStream().forEach(t -> {
-            executorService.execute(() -> {
-                companyDOs.add(companiesService.getTyc(t.getId(), t.getName()));
-            });
-        });
-
-        executorService.shutdown();
-        while (!executorService.isTerminated()) {
-            executorService.awaitTermination(5, TimeUnit.SECONDS);
-        }
-
-        log.debug(companyDOs.toString());
-
-        // 入库
-        companiesService.save(ts.parallelStream().map(t -> t.upd(ReqUrlEnum.TYC)).collect(Collectors.toList()));
-        companiesService.saveNew(companyDOs);
+        poolExecutor.shutdown();
     }
 
-//    @Scheduled(fixedRate = 50000)
+//    @Scheduled(fixedRate = 50000000)
     public void writeDataFromQcc() throws InterruptedException {
         log.debug("begin qcc ...");
         List<CompanyDO> ts = companiesService.listsByNew(2, 10);
@@ -215,14 +110,14 @@ public class ScheduledTasks {
         companiesService.saveNew(companyDOs);
     }
 
-    @Scheduled(fixedRate = 72000000)
-    public void writeDataFromQxb() throws InterruptedException {
+//    @Scheduled(fixedRate = 1000000000)
+    public void writeSouthDataFromQxb() throws InterruptedException {
         log.debug("begin qxb ...");
         BlockingQueue<Runnable> bqueue = new ArrayBlockingQueue<Runnable>(50);
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
         for (int i = 0; i < 300; i++){
-            poolExecutor.execute(new QxbSpider());
+            poolExecutor.execute(new SpiderSouthThread(companyDataManager, companiesService, companySouthService));
         }
         poolExecutor.shutdown();
     }
@@ -234,27 +129,30 @@ public class ScheduledTasks {
 
         ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(10, 60, 50,TimeUnit.MILLISECONDS,bqueue);
         for (int i = 0; i < 300; i++){
-            poolExecutor.execute(new QxbSwSpider());
+            poolExecutor.execute(new SpiderSouthWestThread(companyDataManager, companiesService, companySouthWestService));
         }
         poolExecutor.shutdown();
     }
 
-    @Scheduled(fixedRate = 3000)
+//    @Scheduled(fixedRate = 3000)
     public void fillingSouthWestCompany() {
+        companyDataManager.adds(QueueEnum.SW);
+    }
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                companyDataManager.adds(QueueEnum.SW);
-//            }
-//        }).start();
+//    @Scheduled(fixedRate = 3000)
+    public void fillingSouthCompany() {
+        companyDataManager.adds(QueueEnum.SOUTH);
+    }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                companyDataManager.adds(QueueEnum.SOUTH);
-            }
-        }).start();
+//    @Scheduled(fixedRate = 3000)
+    public void fillingTyCompany() {
+        companyDataManager.adds(QueueEnum.TY);
+    }
+
+    @Scheduled(fixedRate = 3000)
+    public void fillingEastCompany() {
+        companyDataManager.adds(QueueEnum.EAST);
+
     }
 
     @Scheduled(cron = "0 0 * * * ?")

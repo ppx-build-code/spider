@@ -91,6 +91,20 @@ public class CompanyDO {
      */
     private String businessScope;
 
+    /**
+     * 详情json
+     * @return
+     */
+    private String infoJson;
+
+    /**
+     * 变更json
+     * @return
+     */
+    private String changeJson;
+
+    private String tel;
+
     @Override
     public String toString() {
         return "CompanyDO{" +

@@ -42,4 +42,9 @@ public class CompanySouthServiceImpl implements CompanySouthService {
     public void addST(CompanySouthTempDO companySouthTempDO) {
         companySTRepository.save(companySouthTempDO);
     }
+
+    @Override
+    public void addSTs(List<CompanySouthTempDO> companySouthTempDOS) {
+        companySTRepository.save(companySouthTempDOS);
+    }
 }

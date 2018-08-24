@@ -64,6 +64,32 @@ public class CompaniesServiceImpl implements CompaniesService {
 
     private static final String QCC_BUSINESS_SCOPE_PREFIX = "经营范围</div> <div class=\"basic-item-right\">";
     private static final String QCC_BUSINESS_SCOPE_SUFFIX = "<";
+    private static final String QCC_LEGAL_PREFIX = ".html\">";
+    private static final String QCC_LEGAL_SUFFIX = " </a>";
+    private static final String QCC_PHONE_PREFIX = "class=\"phone a-decoration\">";
+    private static final String QCC_PHONE_SUFFIX = "</a>";
+    private static final String QCC_EMAIL_PREFIX = "class=\"email a-decoration\">";
+    private static final String QCC_EMAIL_SUFFIX = "</a>";
+    private static final String QCC_ADDRESS_PREFIX = "class=\"address>";
+    private static final String QCC_ADDRESS_SUFFIX = "</div";
+    private static final String QCC_REGISTRY_PREFIX = "注册号</div> <div class=\"basic-item-right\">";
+    private static final String QCC_REGISTRY_SUFFIX = "</div>";
+    private static final String QCC_UNIFIED_PREFIX = "统一社会信用代码</div> <div class=\"basic-item-right\">";
+    private static final String QCC_UNIFIED_SUFFIX = "</div>";
+    private static final String QCC_REGISTRY_TIME_PREFIX = "成立日期</div> <div class=\"basic-item-right\">";
+    private static final String QCC_REGISTRY_TIME_SUFFIX = "</div>";
+//    private static final String QCC_ADDRESS_PREFIX = "公司住所</div> <div class=\"basic-item-right\">";
+//    private static final String QCC_ADDRESS_SUFFIX = "</div>";
+    private static final String QCC_TERMS_PREFIX = "营业期限</div> <div class=\"basic-item-right\">";
+    private static final String QCC_TERMS_SUFFIX = "</div>";
+    private static final String QCC_INVEST_PREFIX = "注册资本</div> <div class=\"basic-item-right\">";
+    private static final String QCC_INVEST_SUFFIX = "</div>";
+    private static final String QCC_TYPE_PREFIX = "企业类型</div> <div class=\"basic-item-right\">";
+    private static final String QCC_TYPE_SUFFIX = "</div>";
+
+    private static final String QXB_JSON_PREFIX = "window.__INITIAL_STATE__=";
+    private static final String QXB_JSON_SUFFIX = ";(function(){var s;(s=document.currentScript";
+
 
     private final IpPoolManager ipPoolManager;
     private final CompanyEastRepositry companyEastRepositry;
@@ -98,6 +124,14 @@ public class CompaniesServiceImpl implements CompaniesService {
 
                         content = req(url, null);
                         handleDetail(content, companyDO, reqUrlEnum);
+
+                        if (reqUrlEnum == ReqUrlEnum.QXB) {
+                            Thread.sleep((long) (Math.random()*2000));
+
+                            url = StringUtils.replace(url, "info", "change");
+                            content = req(url, null);
+                            handleChange(content, companyDO);
+                        }
 
                         flag2 = false;
                     } catch (Exception e) {
@@ -224,11 +258,33 @@ public class CompaniesServiceImpl implements CompaniesService {
 
         } else if (reqUrlEnum == ReqUrlEnum.QCC) {
             String businessScope = StringUtils.substringBetween(content, QCC_BUSINESS_SCOPE_PREFIX, QCC_BUSINESS_SCOPE_SUFFIX);
+            String legal = StringUtils.substringBetween(content, QCC_LEGAL_PREFIX, QCC_LEGAL_SUFFIX);
+            String tel = StringUtils.substringBetween(content, QCC_PHONE_PREFIX, QCC_PHONE_SUFFIX);
+            String email = StringUtils.substringBetween(content, QCC_EMAIL_PREFIX, QCC_EMAIL_SUFFIX);
+            String address = StringUtils.substringBetween(content, QCC_ADDRESS_PREFIX, QCC_ADDRESS_SUFFIX);
+            String registry = StringUtils.substringBetween(content, QCC_REGISTRY_PREFIX, QCC_REGISTRY_SUFFIX);
+            String unified = StringUtils.substringBetween(content, QCC_UNIFIED_PREFIX, QCC_UNIFIED_SUFFIX);
+            String registryTime = StringUtils.substringBetween(content, QCC_REGISTRY_TIME_PREFIX, QCC_REGISTRY_TIME_SUFFIX);
+            String terms = StringUtils.substringBetween(content, QCC_TERMS_PREFIX, QCC_TERMS_SUFFIX);
+            String type = StringUtils.substringBetween(content, QCC_TYPE_PREFIX, QCC_TYPE_SUFFIX);
+            String invest = StringUtils.substringBetween(content, QCC_INVEST_PREFIX, QCC_INVEST_SUFFIX);
+
             log.debug("经营范围 > > > " + businessScope);
+
             companyDO.setBusinessScope(businessScope);
+            companyDO.setLegal(legal);
+            companyDO.setRegisterNumber(registry);
+            companyDO.setAddress(address);
+            companyDO.setCapitalInvested(invest);
+            companyDO.setTel(tel);
+            companyDO.setEmail(email);
+            companyDO.setCreditCode(unified);
+            companyDO.setStartTime(registryTime);
+            companyDO.setTerms(terms);
+            companyDO.setType(type);
 
         } else if (reqUrlEnum == ReqUrlEnum.QXB) {
-            content = StringUtils.substringBetween(content,"window.__INITIAL_STATE__=", ";(function(){var s;(s=document.currentScript");
+            content = StringUtils.substringBetween(content,QXB_JSON_PREFIX, QXB_JSON_SUFFIX);
 
             JSONObject jsonObject = new JSONObject(content);
 
@@ -263,6 +319,7 @@ public class CompaniesServiceImpl implements CompaniesService {
             log.debug("发照时间 {}", checkDate);
             log.debug("登记机关 {}", registerAuthority);
 
+            companyDO.setInfoJson(content);
             companyDO.setCapitalInvested(capitalInvested);
             companyDO.setStartTime(startTime);
             companyDO.setStatus(CompanyStatusEnum.getCode(status));
@@ -277,6 +334,11 @@ public class CompaniesServiceImpl implements CompaniesService {
             companyDO.setBusinessScope(businessScope);
 
         }
+    }
+
+    private void handleChange(String content, CompanyDO companyDO) {
+        content = StringUtils.substringBetween(content,QXB_JSON_PREFIX, QXB_JSON_SUFFIX);
+        companyDO.setChangeJson(content);
     }
 
     @Override

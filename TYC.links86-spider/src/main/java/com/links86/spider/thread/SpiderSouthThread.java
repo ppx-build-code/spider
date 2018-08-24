@@ -35,7 +35,7 @@ public class SpiderSouthThread implements Runnable{
                 }
             }
 
-            CompanyDO companyDO = companiesService.getTyc(companySouthDO.getId(), companySouthDO.getName());
+            CompanyDO companyDO = companiesService.getQxb(companySouthDO.getId(), companySouthDO.getName());
 
             int flag = 2;
             if (companyDO == null || StringUtils.isBlank(companyDO.getAddress())) {

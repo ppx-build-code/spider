@@ -14,4 +14,6 @@ public interface CompanySouthService {
     void upd(CompanySouthDO companySouthDO, Integer flag);
 
     void addST(CompanySouthTempDO companySouthTempDO);
+
+    void addSTs(List<CompanySouthTempDO> companySouthTempDOS);
 }

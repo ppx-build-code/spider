@@ -2,6 +2,7 @@ package com.links86.spider.manager;
 
 import com.links86.spider.domain.constant.QueueEnum;
 import com.links86.spider.domain.constant.ReqUrlEnum;
+import com.links86.spider.domain.dao.CompanyEast;
 import com.links86.spider.domain.dao.CompanySouthDO;
 import com.links86.spider.domain.dao.CompanySouthWestDO;
 import com.links86.spider.domain.dao.CompanyTyDO;
@@ -28,6 +29,7 @@ public class CompanyDataManager {
     private static ArrayBlockingQueue<CompanyTyDO> tyQueue;
     private static ArrayBlockingQueue<CompanySouthDO> southQueue;
     private static ArrayBlockingQueue<CompanySouthWestDO> swQueue;
+    private static ArrayBlockingQueue<CompanyEast> eastQueue;
 
     private static ArrayBlockingQueue<CompanyTyDO> getTyQueue() {
         if (tyQueue == null) {
@@ -48,6 +50,13 @@ public class CompanyDataManager {
             swQueue = new ArrayBlockingQueue<>(1000);
         }
         return swQueue;
+    }
+
+    public static ArrayBlockingQueue<CompanyEast> getEastQueue() {
+        if (eastQueue == null) {
+            eastQueue = new ArrayBlockingQueue<>(1000);
+        }
+        return eastQueue;
     }
 
     @NonNull
@@ -73,6 +82,8 @@ public class CompanyDataManager {
             return getTyQueue();
         } else if (queueEnum == QueueEnum.SW) {
             return getSwQueue();
+        } else if (queueEnum == QueueEnum.EAST) {
+            return getEastQueue();
         } else {
             return null;
         }
@@ -94,6 +105,11 @@ public class CompanyDataManager {
             companySouthWestDOS.parallelStream().forEach(c -> {
                 getSwQueue().add(c);
             });
+        } else if (queueEnum == QueueEnum.EAST) {
+            List<CompanyEast> companyEasts = companiesService.listsByEast(3, 1000);
+            companyEasts.parallelStream().forEach(c -> {
+                getEastQueue().add(c);
+            });
         }
     }
 
@@ -108,6 +124,8 @@ public class CompanyDataManager {
                     return (T) getSouthQueue().take();
                 } else if (queueEnum == QueueEnum.SW){
                     return (T) getSwQueue().take();
+                } else if (queueEnum == QueueEnum.EAST) {
+                    return (T) getEastQueue().take();
                 }
             } catch (InterruptedException e) {
                 log.error("get data from queue has error : {}", e.getMessage());

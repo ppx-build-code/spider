@@ -88,4 +88,14 @@ public class CompanySouthTempDO {
      * 经营范围
      */
     private String businessScope;
+
+    /**
+     * 详情json
+     */
+    private String infoJson;
+
+    /**
+     * 变更json
+     */
+    private String changeJson;
 }
